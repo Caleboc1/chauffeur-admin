@@ -1,0 +1,191 @@
+.sidebar {
+  width: var(--sidebar-width);
+  height: 100vh;
+  background-color: var(--color-layer-2);
+  border-right: var(--stroke-0) solid var(--color-neutral-800);
+  position: sticky;
+  top: 0;
+  overflow: hidden;
+}
+
+.sidebarLayout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.logo {
+  padding: var(--spacing-6) var(--spacing-4);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-bottom: var(--stroke-0) solid var(--color-neutral-800);
+  flex-shrink: 0;
+}
+
+.logoImage {
+  width: 100%;
+  max-width: 150px;
+  height: auto;
+}
+
+.sidebarNav {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.navGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.navSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.groupTitle {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-neutral-600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: var(--spacing-4) var(--spacing-4) var(--spacing-2);
+}
+
+.groupItems {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  color: var(--color-neutral-400);
+  border-radius: var(--stroke-2);
+  font-size: var(--md-sys-typescale-body-medium-size);
+  font-weight: 500;
+  transition: all 0.2s;
+  width: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  line-height: inherit;
+}
+
+.navLink:hover {
+  background-color: var(--color-layer-3);
+  color: var(--color-neutral-100);
+}
+
+.active {
+  background-color: var(--color-primary-alpha-10) !important;
+  color: var(--color-primary-400) !important;
+  font-weight: 700;
+  border-left: var(--stroke-2) solid var(--color-primary-400);
+}
+
+.label {
+  flex: 1;
+}
+
+.children {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.childLink {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  color: var(--color-neutral-500);
+  border-radius: var(--stroke-2);
+  font-size: var(--md-sys-typescale-body-small-size);
+  transition: all 0.2s;
+}
+
+.childLink:hover {
+  color: var(--color-neutral-100);
+  background-color: var(--color-layer-3);
+}
+
+.sosLink {
+  color: var(--color-red-100);
+}
+
+.sosLink:hover {
+  background-color: var(--color-red-alpha-10);
+  color: var(--color-red-200);
+}
+
+.sosLink.active {
+  background-color: var(--color-red-alpha-10) !important;
+  color: var(--color-red-200) !important;
+  border-left: var(--stroke-2) solid var(--color-red-200);
+}
+
+.badge {
+  background-color: var(--color-red-200);
+  color: #ffffff;
+  font-size: var(--typography-body-b-4-fontsize);
+  font-weight: var(--typography-body-b-4-fontweight);
+  line-height: var(--typography-body-b-4-lineheight);
+  padding: var(--spacing-0) var(--spacing-2);
+  border-radius: 99px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+}
+
+.sidebarBottom {
+  flex-shrink: 0;
+  border-top: var(--border-default);
+  padding: 1rem;
+}
+
+.sidebarSignOutButton {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--stroke-2);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #EF4444;
+  font-size: var(--md-sys-typescale-body-medium-size);
+  font-weight: 500;
+  font-family: var(--font-family-base);
+  transition: background 0.15s ease;
+  text-align: left;
+}
+
+.sidebarSignOutButton:hover {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.sidebarSignOutIcon {
+  width: 1.125rem;
+  height: 1.125rem;
+  color: #EF4444;
+  flex-shrink: 0;
+}
+
+.sidebarSignOutLabel {
+  font-size: var(--md-sys-typescale-body-medium-size);
+  color: #EF4444;
+}

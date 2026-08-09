@@ -1,0 +1,180 @@
+/* ═══════════════════════════════════════════════════════════════════
+   SINGLE UNIFIED CARD
+   ═══════════════════════════════════════════════════════════════════ */
+
+.card {
+  background: var(--color-layer-1);
+  border: var(--stroke-0) solid var(--color-neutral-800);
+  border-radius: var(--stroke-3);
+  box-shadow: var(--effect-e2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  /* Stretch to match sibling card heights in the grid row */
+  height: 100%;
+}
+
+/* ── Top Section — Total Earning ─────────────────────────────────── */
+
+.topSection {
+  padding: 1.25rem 1.5rem;
+  /* Divider between top section and bottom grid — same weight as cell dividers */
+  border-bottom: var(--stroke-0) solid var(--color-neutral-800);
+}
+
+/* Card title — plain dark text, not bold, standard label size */
+.cardTitle {
+  display: block;
+  font-size: var(--md-sys-typescale-title-small-size);
+  font-weight: 500;
+  color: #111;
+  margin-bottom: 0.75rem;
+}
+
+/* Large earning number — dominant, plain black */
+.earningValue {
+  font-size: var(--md-sys-typescale-headline-small-size);
+  font-weight: 700;
+  color: #000;
+  line-height: 1;
+  margin-bottom: 0.75rem;
+}
+
+/* Row containing trend + label on left and wallet icon on right */
+.earningMeta {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.earningMetaLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Green trend badge */
+.trendBadge {
+  font-size: var(--md-sys-typescale-label-medium-size);
+  font-weight: 600;
+  color: var(--color-online-text-dark);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.trendArrow {
+  font-size: 11px;
+  color: var(--color-online-text-dark);
+}
+
+/* Muted grey "Total Earning" label */
+.earningLabel {
+  font-size: var(--md-sys-typescale-label-medium-size);
+  color: #9e9e9e;
+}
+
+/* Wallet icon in its own mini-card container */
+.walletIconBox {
+  width: 2.25rem;
+  height: 2.25rem;
+  background: var(--color-layer-1);
+  border: var(--stroke-0) solid var(--color-neutral-800);
+  border-radius: var(--stroke-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: var(--effect-e1);
+}
+
+.walletIconBox svg {
+  color: var(--color-icon);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   BOTTOM SECTION — 2×2 metric grid (inside the same card)
+   ═══════════════════════════════════════════════════════════════════ */
+
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* Fill remaining vertical space so the card matches its siblings */
+  flex: 1;
+}
+
+/* Each cell — white bg with internal dividers */
+.gridCell {
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+/* Vertical divider — left column cells get a right border */
+.gridCell:nth-child(1),
+.gridCell:nth-child(3) {
+  border-right: var(--stroke-0) solid var(--color-neutral-800);
+}
+
+/* Horizontal divider — top row cells get a bottom border */
+.gridCell:nth-child(1),
+.gridCell:nth-child(2) {
+  border-bottom: var(--stroke-0) solid var(--color-neutral-800);
+}
+
+/* Cell text content */
+.cellContent {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cellValue {
+  font-size: var(--md-sys-typescale-title-medium-size);
+  font-weight: 700;
+  color: #000;
+  line-height: 1.2;
+}
+
+.cellLabel {
+  font-size: var(--md-sys-typescale-label-small-size);
+  color: #9e9e9e;
+}
+
+/* Cell icon — small rounded square with tinted background */
+.cellIcon {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--stroke-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Icon variant colours ────────────────────────────── */
+
+/* Already Withdraw — green */
+.cellIcon.withdrawn {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+/* Pending Withdraw — red / pink */
+.cellIcon.pending {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Total Commission — purple */
+.cellIcon.commission {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+/* Rejected Withdraw — orange */
+.cellIcon.rejected {
+  background: #fff7ed;
+  color: #ea580c;
+}

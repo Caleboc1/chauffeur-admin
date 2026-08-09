@@ -1,0 +1,56 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  padding: var(--spacing-6);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: var(--typography-headings-h-6-fontsize);
+  font-weight: var(--typography-headings-h-6-fontweight, 700);
+  color: var(--color-neutral-100);
+  margin: 0;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-4);
+}
+
+.metricCard {
+  background-color: var(--color-layer-2);
+  border: var(--stroke-0) solid var(--color-neutral-alpha-10);
+  border-radius: var(--stroke-2);
+  padding: var(--spacing-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  box-shadow: var(--effect-e2);
+}
+
+.metricLabel {
+  font-size: var(--typography-body-b-3-fontsize);
+  color: var(--color-neutral-600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.metricValue {
+  font-size: var(--typography-headings-h-5-fontsize);
+  font-weight: var(--typography-headings-h-5-fontweight);
+  color: var(--color-neutral-100);
+}
+
+.content {
+  background-color: var(--color-layer-2);
+  border: var(--stroke-0) solid var(--color-neutral-alpha-10);
+  border-radius: var(--stroke-2);
+  padding: var(--spacing-4);
+}

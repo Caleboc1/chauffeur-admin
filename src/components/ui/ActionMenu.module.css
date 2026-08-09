@@ -1,0 +1,75 @@
+.wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  border-radius: var(--stroke-1);
+  transition: background 0.15s, color 0.15s;
+}
+
+.trigger:hover {
+  background: var(--color-layer-3);
+  color: var(--color-neutral-200);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 10;
+  width: max-content;
+  background: var(--color-layer-2);
+  border: var(--stroke-0) solid var(--color-neutral-800);
+  border-radius: var(--stroke-2);
+  box-shadow: var(--effect-e2);
+  padding: var(--spacing-1);
+  margin-top: 2px;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: var(--spacing-2) var(--spacing-5);
+  border: none;
+  background: transparent;
+  color: var(--color-neutral-300);
+  font-size: var(--typography-body-b-2-fontsize);
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: var(--stroke-1);
+  white-space: nowrap;
+  text-align: center;
+  transition: background 0.15s;
+}
+
+.action:hover {
+  background: var(--color-layer-3);
+  color: var(--color-neutral-100);
+}
+
+.danger {
+  color: var(--color-red-100);
+}
+
+.danger:hover {
+  background: var(--color-red-100);
+  color: #fff;
+}

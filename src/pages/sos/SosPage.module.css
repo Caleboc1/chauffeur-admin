@@ -1,0 +1,186 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.title {
+  font-size: var(--typography-headings-h-6-fontsize);
+  font-weight: var(--typography-headings-h-6-fontweight, 700);
+  color: var(--color-neutral-100);
+  margin: 0;
+}
+
+.subtitle {
+  font-size: var(--md-sys-typescale-body-large-size);
+  color: var(--color-neutral-500);
+  margin: 0;
+}
+
+.tabSwitcher {
+  display: flex;
+  background-color: var(--color-layer-2);
+  padding: var(--spacing-1);
+  border-radius: var(--stroke-2);
+  border: var(--stroke-0) solid var(--color-neutral-800);
+}
+
+.tabBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
+  border: none;
+  background: transparent;
+  color: var(--color-neutral-600);
+  font-size: var(--typography-body-b-3-fontsize);
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: var(--stroke-1);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tabBtn:hover {
+  color: var(--color-neutral-200);
+}
+
+.activeTab {
+  background-color: var(--color-layer-3);
+  color: var(--color-primary-400) !important;
+  box-shadow: var(--effect-e1);
+}
+
+.tableWrapper {
+  background-color: var(--color-layer-1);
+  border: var(--stroke-0) solid var(--color-neutral-800);
+  border-radius: var(--stroke-3);
+  padding: var(--spacing-6);
+}
+
+/* ── User Cell ── */
+
+.userCell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.userAvatar {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-layer-3);
+  color: var(--color-neutral-100);
+  font-weight: 700;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.userName {
+  font-weight: 500;
+  color: var(--color-neutral-100);
+  white-space: nowrap;
+}
+
+.userRole {
+  font-size: 0.75rem;
+  color: var(--color-neutral-500);
+  text-transform: capitalize;
+}
+
+.typeCell {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-neutral-500);
+}
+
+/* ── Menu Button ── */
+
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--stroke-2);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #9E9E9E;
+  transition: background 0.1s ease, color 0.1s ease;
+}
+
+.menuButton:hover {
+  background: var(--color-layer-3);
+  color: var(--color-neutral-100);
+}
+
+/* ── Dropdown ── */
+
+.dropdownOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+}
+
+.actionDropdown {
+  position: fixed;
+  z-index: 100;
+  min-width: 10rem;
+  background: #fff;
+  border: 1px solid var(--color-neutral-800);
+  border-radius: var(--stroke-2);
+  box-shadow: var(--effect-e3);
+  padding: 0.375rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.actionDropdown button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: var(--color-neutral-100);
+  background: transparent;
+  border: none;
+  border-radius: var(--stroke-1);
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.actionDropdown button:hover {
+  background: var(--color-layer-3);
+}
+
+.dropdownIcon {
+  flex-shrink: 0;
+}

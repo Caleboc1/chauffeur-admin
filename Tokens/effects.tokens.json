@@ -1,0 +1,78 @@
+{
+    "effect": {
+        "global tokens": {
+            "e0": {
+                "description": null,
+                "type": "custom-shadow",
+                "value": {
+                    "shadowType": "dropShadow",
+                    "radius": 0,
+                    "color": "#1b1c1d00",
+                    "offsetX": 0,
+                    "offsetY": 0,
+                    "spread": 0
+                },
+                "extensions": {
+                    "org.lukasoppermann.figmaDesignTokens": {
+                        "styleId": "S:33f6076c30103b776f9109fc1586f03bf7777bc9,",
+                        "exportKey": "effect"
+                    }
+                }
+            },
+            "e1": {
+                "description": null,
+                "type": "custom-shadow",
+                "value": {
+                    "shadowType": "dropShadow",
+                    "radius": 4,
+                    "color": "#1b1c1d0a",
+                    "offsetX": 0,
+                    "offsetY": 2,
+                    "spread": 0
+                },
+                "extensions": {
+                    "org.lukasoppermann.figmaDesignTokens": {
+                        "styleId": "S:29e2e9a37f7734c0bc86e5dbb821448d2c6b2d2f,",
+                        "exportKey": "effect"
+                    }
+                }
+            },
+            "e2": {
+                "description": null,
+                "type": "custom-shadow",
+                "value": {
+                    "shadowType": "dropShadow",
+                    "radius": 32,
+                    "color": "#585c5f1a",
+                    "offsetX": 0,
+                    "offsetY": 16,
+                    "spread": -12
+                },
+                "extensions": {
+                    "org.lukasoppermann.figmaDesignTokens": {
+                        "styleId": "S:28381dd2954815aede9d8175601116cd90ddf097,",
+                        "exportKey": "effect"
+                    }
+                }
+            },
+            "e3": {
+                "description": null,
+                "type": "custom-shadow",
+                "value": {
+                    "shadowType": "dropShadow",
+                    "radius": 40,
+                    "color": "#585c5f29",
+                    "offsetX": 0,
+                    "offsetY": 16,
+                    "spread": -8
+                },
+                "extensions": {
+                    "org.lukasoppermann.figmaDesignTokens": {
+                        "styleId": "S:506d8ff2582b804b3fd687f718a8bf5d60eb6c4a,",
+                        "exportKey": "effect"
+                    }
+                }
+            }
+        }
+    }
+}

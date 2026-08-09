@@ -1,0 +1,100 @@
+.card {
+  background: var(--color-layer-1);
+  border: var(--stroke-0) solid var(--color-neutral-800);
+  border-radius: var(--stroke-3);
+  box-shadow: var(--effect-e2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  padding: 1rem 1.5rem;
+  border-bottom: var(--stroke-0) solid var(--color-neutral-800);
+}
+
+.title {
+  font-size: var(--md-sys-typescale-title-medium-size);
+  font-weight: 700;
+  color: var(--color-neutral-100);
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1.5rem;
+  border-bottom: 0.0625rem solid var(--color-neutral-800);
+  transition: background 0.1s ease;
+}
+
+.item:last-child { border-bottom: none; }
+.item:hover { background: var(--color-layer-3); }
+
+.rank {
+  font-size: var(--md-sys-typescale-label-medium-size);
+  font-weight: 700;
+  color: #BDBDBD;
+  width: 1rem;
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 0.0625rem solid var(--color-neutral-800);
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-size: var(--md-sys-typescale-body-medium-size);
+  font-weight: 500;
+  color: var(--color-neutral-100);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.125rem;
+}
+
+.stars {
+  color: var(--brand-gold);
+  font-size: var(--md-sys-typescale-label-medium-size);
+}
+
+.ratingValue {
+  font-size: var(--md-sys-typescale-label-medium-size);
+  color: #9E9E9E;
+}
+
+.rideBadge {
+  background: var(--color-layer-3);
+  color: var(--color-neutral-200);
+  font-size: var(--md-sys-typescale-label-medium-size);
+  font-weight: 500;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  border: var(--stroke-0) solid var(--color-neutral-800);
+  white-space: nowrap;
+  flex-shrink: 0;
+}

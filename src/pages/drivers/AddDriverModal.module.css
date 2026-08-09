@@ -1,0 +1,504 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 48rem;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(1rem); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header ── */
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1.5rem 1.5rem 0;
+}
+
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-neutral-100);
+  margin: 0;
+}
+
+.modalSubtitle {
+  font-size: 0.875rem;
+  color: var(--color-neutral-500);
+  margin: 0.25rem 0 0;
+}
+
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background: transparent;
+  border-radius: 0.375rem;
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.closeBtn:hover {
+  background: var(--color-layer-3);
+  color: var(--color-neutral-100);
+}
+
+/* ── Stepper ── */
+
+.stepper {
+  display: flex;
+  align-items: center;
+  padding: 1.5rem 1.5rem 0;
+  gap: 0;
+}
+
+.stepItem {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.stepCircle {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--color-layer-3);
+  color: var(--color-neutral-500);
+  transition: all 0.2s ease;
+}
+
+.stepActive .stepCircle {
+  background: var(--color-primary-400);
+  color: #fff;
+}
+
+.stepDone .stepCircle {
+  background: var(--color-green-200);
+  color: #fff;
+}
+
+.stepLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-neutral-500);
+  margin-left: 0.375rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stepActive .stepLabel {
+  color: var(--color-primary-400);
+  font-weight: 600;
+}
+
+.stepDone .stepLabel {
+  color: var(--color-green-200);
+}
+
+.stepLine {
+  flex: 1;
+  height: 2px;
+  background: var(--color-neutral-800);
+  margin: 0 0.75rem;
+  min-width: 1rem;
+  border-radius: 1px;
+}
+
+.stepLineDone {
+  background: var(--color-green-200);
+}
+
+/* ── Step Content ── */
+
+.stepContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  min-height: 18rem;
+}
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sectionNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  background: var(--color-layer-2);
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--color-neutral-500);
+  line-height: 1.5;
+  border: 1px solid var(--color-neutral-800);
+}
+
+.sectionNotice svg {
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+  color: var(--color-primary-400);
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.fieldLabel {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-neutral-100);
+}
+
+.helperText {
+  font-size: 0.75rem;
+  color: var(--color-neutral-500);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.textarea {
+  background: var(--color-layer-3);
+  border: 1px solid var(--color-neutral-800);
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: var(--color-neutral-100);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.textarea:focus {
+  border-color: var(--color-primary-400);
+}
+
+/* ── Checkbox Row ── */
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--color-neutral-100);
+  cursor: pointer;
+  padding: 0.5rem 0;
+}
+
+.checkboxRow input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--color-primary-400);
+}
+
+/* ── Document Rows ── */
+
+.docRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--color-neutral-800);
+  border-radius: 0.5rem;
+  background: var(--color-layer-2);
+}
+
+.docRowHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+}
+
+.docRowHeader svg {
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+  color: var(--color-primary-400);
+}
+
+.docRowInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.docRowInfo strong {
+  font-size: 0.875rem;
+  color: var(--color-neutral-100);
+}
+
+.docRowActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-left: 2.125rem;
+}
+
+.docUploadBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-primary-400);
+  background: transparent;
+  border: 1px solid var(--color-primary-400);
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.docUploadBtn:hover {
+  background: var(--color-primary-400);
+  color: #fff;
+}
+
+.docUploaded {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--color-green-200);
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid var(--color-green-200);
+  border-radius: 0.375rem;
+}
+
+.docFileName {
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.docRemoveBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: none;
+  background: transparent;
+  border-radius: 0.25rem;
+  color: var(--color-red-100);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.docRemoveBtn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.docCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.docCheckbox input[type="checkbox"] {
+  width: 0.875rem;
+  height: 0.875rem;
+  accent-color: var(--color-primary-400);
+}
+
+/* ── Review Block ── */
+
+.reviewBlock {
+  border: 1px solid var(--color-neutral-800);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.reviewBlockHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--color-layer-2);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-neutral-100);
+  border-bottom: 1px solid var(--color-neutral-800);
+}
+
+.reviewBlockHeader svg {
+  color: var(--color-primary-400);
+  flex-shrink: 0;
+}
+
+.reviewBlockHeader span {
+  flex: 1;
+}
+
+.reviewEditBtn {
+  font-size: 0.8125rem;
+  color: var(--color-primary-400);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-family: inherit;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.reviewEditBtn:hover {
+  background: rgba(79, 70, 229, 0.08);
+}
+
+.reviewGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+.reviewItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-neutral-800);
+}
+
+.reviewItem:nth-last-child(-n+2) {
+  border-bottom: none;
+}
+
+.reviewItem label {
+  font-size: 0.6875rem;
+  color: var(--color-neutral-500);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+
+.reviewItem span {
+  font-size: 0.875rem;
+  color: var(--color-neutral-100);
+}
+
+.reviewStatusOk {
+  color: var(--color-green-200) !important;
+  font-weight: 500;
+}
+
+.reviewStatusPending {
+  color: var(--color-neutral-500) !important;
+}
+
+.reviewSkipped {
+  padding: 1rem;
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-neutral-500);
+  font-style: italic;
+}
+
+/* ── Footer ── */
+
+.modalFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid var(--color-neutral-800);
+}
+
+.footerRight {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* ── Success Screen ── */
+
+.successScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 3rem 2rem;
+  gap: 0.75rem;
+}
+
+.successIcon {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--color-green-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.successScreen h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-neutral-100);
+  margin: 0;
+}
+
+.successMsg {
+  font-size: 0.9375rem;
+  color: var(--color-neutral-100);
+  margin: 0;
+  max-width: 28rem;
+  line-height: 1.5;
+}
+
+.successHint {
+  font-size: 0.8125rem;
+  color: var(--color-neutral-500);
+  margin: 0 0 0.5rem;
+  max-width: 26rem;
+  line-height: 1.5;
+}

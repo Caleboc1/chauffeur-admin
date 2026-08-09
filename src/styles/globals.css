@@ -1,0 +1,194 @@
+/* Inter font import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  /* MD3 Typography Tokens (Inter) */
+  --md-sys-typescale-display-large-font: 'Inter', sans-serif;
+  --md-sys-typescale-display-large-size: 57px;
+  --md-sys-typescale-display-large-line-height: 64px;
+  --md-sys-typescale-display-large-weight: 400;
+  --md-sys-typescale-display-medium-size: 45px;
+  --md-sys-typescale-display-medium-line-height: 52px;
+  --md-sys-typescale-display-medium-weight: 400;
+  --md-sys-typescale-display-small-size: 36px;
+  --md-sys-typescale-display-small-line-height: 44px;
+  --md-sys-typescale-display-small-weight: 400;
+
+  --md-sys-typescale-headline-large-size: 32px;
+  --md-sys-typescale-headline-large-line-height: 40px;
+  --md-sys-typescale-headline-large-weight: 400;
+  --md-sys-typescale-headline-medium-size: 28px;
+  --md-sys-typescale-headline-medium-line-height: 36px;
+  --md-sys-typescale-headline-medium-weight: 400;
+  --md-sys-typescale-headline-small-size: 24px;
+  --md-sys-typescale-headline-small-line-height: 32px;
+  --md-sys-typescale-headline-small-weight: 400;
+
+  --md-sys-typescale-title-large-size: 22px;
+  --md-sys-typescale-title-large-line-height: 28px;
+  --md-sys-typescale-title-large-weight: 400;
+  --md-sys-typescale-title-medium-size: 16px;
+  --md-sys-typescale-title-medium-line-height: 24px;
+  --md-sys-typescale-title-medium-weight: 500;
+  --md-sys-typescale-title-small-size: 14px;
+  --md-sys-typescale-title-small-line-height: 20px;
+  --md-sys-typescale-title-small-weight: 500;
+
+  --md-sys-typescale-body-large-size: 16px;
+  --md-sys-typescale-body-large-line-height: 24px;
+  --md-sys-typescale-body-large-weight: 400;
+  --md-sys-typescale-body-medium-size: 14px;
+  --md-sys-typescale-body-medium-line-height: 20px;
+  --md-sys-typescale-body-medium-weight: 400;
+  --md-sys-typescale-body-small-size: 12px;
+  --md-sys-typescale-body-small-line-height: 16px;
+  --md-sys-typescale-body-small-weight: 400;
+
+  --md-sys-typescale-label-large-size: 14px;
+  --md-sys-typescale-label-large-line-height: 20px;
+  --md-sys-typescale-label-large-weight: 500;
+  --md-sys-typescale-label-medium-size: 12px;
+  --md-sys-typescale-label-medium-line-height: 16px;
+  --md-sys-typescale-label-medium-weight: 500;
+  --md-sys-typescale-label-small-size: 11px;
+  --md-sys-typescale-label-small-line-height: 16px;
+  --md-sys-typescale-label-small-weight: 500;
+
+  /* Brand Palette (Chauffeur Navy & Gold) */
+  --brand-navy: var(--color-primary-400); /* User requested primary color as color-primary-400 */
+  --brand-gold: #C9A84C;
+
+  /* Light Mode Color Tokens */
+  --color-primary: #005629;
+  --color-primary-100: #e5f2eb;
+  --color-primary-200: #b3d7c2;
+  --color-primary-300: #80bc98;
+  --color-primary-400: #005629;
+  --color-primary-500: #003d1d;
+  --color-primary-alpha-10: rgba(0, 86, 41, 0.1);
+  --color-primary-alpha-20: rgba(0, 86, 41, 0.2);
+
+  --color-secondary-100: #FEF3C7;
+  --color-secondary-200: var(--brand-gold);
+  --color-secondary-300: #D97706;
+  --color-secondary-400: #B45309;
+  --color-secondary-500: #92400E;
+  --color-secondary-alpha-10: rgba(201, 168, 76, 0.1);
+
+  --color-neutral-100: #111827;
+  --color-neutral-200: #1F2937;
+  --color-neutral-300: #374151;
+  --color-neutral-400: #4B5563;
+  --color-neutral-500: #6B7280;
+  --color-neutral-600: #9CA3AF;
+  --color-neutral-700: #D1D5DB;
+  --color-neutral-800: #E5E7EB;
+  --color-neutral-900: #F3F4F6;
+  --color-neutral-1000: #F9FAFB;
+  --color-neutral-alpha-10: rgba(17, 24, 39, 0.1);
+
+  --color-red-100: #EF4444;
+  --color-red-200: #B91C1C;
+  --color-red-alpha-10: rgba(239, 68, 68, 0.1);
+
+  --color-yellow-100: #F59E0B;
+  --color-yellow-200: #B45309;
+  --color-yellow-alpha-10: rgba(245, 158, 11, 0.1);
+
+  --color-green-100: #10B981;
+  --color-green-200: #047857;
+  --color-green-alpha-10: rgba(16, 185, 129, 0.1);
+
+  --color-orange-100: #F97316;
+  --color-orange-200: #C2410C;
+  --color-orange-alpha-10: rgba(249, 115, 22, 0.1);
+
+  --color-grey-50: #F0F0F0;
+
+  /* Layering (Light Mode) */
+  --color-layer-1: #FFFFFF;
+  --color-layer-2: #F9FAFB;
+  --color-layer-3: #F3F4F6;
+
+  /* Spacing */
+  --spacing-0: 2px;   --spacing-1: 4px;   --spacing-2: 8px;
+  --spacing-3: 12px;  --spacing-4: 16px;  --spacing-5: 20px;
+  --spacing-6: 24px;  --spacing-7: 32px;  --spacing-8: 40px;
+  --spacing-9: 48px;  --spacing-10: 56px;
+
+  /* Stroke & Radius */
+  --stroke-0: 1px;  --stroke-1: 2px;  --stroke-2: 4px;  --stroke-3: 8px;
+
+  /* Shadows (Light Mode optimized) */
+  --effect-e0: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+  --effect-e1: 0px 1px 3px 0px rgba(0, 0, 0, 0.1), 0px 1px 2px 0px rgba(0, 0, 0, 0.06);
+  --effect-e2: 0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0px 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --effect-e3: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  /* Layout Variables */
+  --sidebar-width: 280px;
+  --header-height: 64px;
+
+  /* Refinement v2 — Online Badge */
+  --color-online-border:    #16A34A;
+  --color-online-text-dark: #14532D;
+  --color-online-dot-dark:  #15803D;
+
+  /* Refinement v2 — Icon */
+  --color-icon:    #5A5A72;
+  --color-icon-bg: #EFEFEF;
+
+  /* Refinement v2 — Driver status tokens */
+  --color-driver-active-bg:       #DCFCE7;
+  --color-driver-active-text:     #166534;
+  --color-driver-inactive-bg:     #EDE9FE;
+  --color-driver-inactive-text:   #5B21B6;
+  --color-driver-suspended-bg:    #FEE2E2;
+  --color-driver-suspended-text:  #991B1B;
+  --color-driver-review-bg:       #FFF7ED;
+  --color-driver-review-text:     #C2410C;
+
+  /* Refinement v2 — Table header */
+  --color-table-header-bg: #F0F0F5;
+}
+
+/* Base Resets */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--md-sys-typescale-body-large-font, 'Inter', sans-serif);
+  background-color: var(--color-layer-1);
+  color: var(--color-neutral-100);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  height: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  color: var(--color-neutral-100);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+ul {
+  list-style: none;
+}

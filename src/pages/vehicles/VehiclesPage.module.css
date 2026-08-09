@@ -1,0 +1,94 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.title {
+  font-size: var(--typography-headings-h-6-fontsize);
+  font-weight: var(--typography-headings-h-6-fontweight, 700);
+  color: var(--color-neutral-100);
+}
+
+.subtitle {
+  font-size: var(--md-sys-typescale-body-large-size);
+  color: var(--color-neutral-500);
+}
+
+.statsRow {
+  display: flex;
+  gap: var(--spacing-6);
+}
+
+.statBox {
+  flex: 1;
+  background-color: var(--color-layer-1);
+  padding: var(--spacing-6);
+  border: var(--stroke-0) solid var(--color-neutral-800);
+  border-radius: var(--stroke-3);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  box-shadow: var(--effect-e1);
+}
+
+.statBox h3 {
+  font-size: var(--md-sys-typescale-headline-small-size);
+  color: var(--color-neutral-100);
+  margin: 0;
+}
+
+.statBox label {
+  font-size: var(--md-sys-typescale-label-medium-size);
+  color: var(--color-neutral-500);
+}
+
+.successIcon { color: var(--color-green-200); }
+.warningIcon { color: var(--color-yellow-200); }
+
+.tableWrapper {
+  background-color: var(--color-layer-1);
+  padding: var(--spacing-6);
+  border: var(--stroke-0) solid var(--color-neutral-800);
+  border-radius: var(--stroke-3);
+}
+
+.vehicleCell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.carIcon {
+  color: var(--brand-gold);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+}
+
+.model {
+  font-weight: 600;
+  color: var(--color-neutral-100);
+}
+
+.plate {
+  font-size: var(--typography-body-b-4-fontsize);
+  color: var(--color-neutral-500);
+  font-family: monospace;
+}
+
+.driverCell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  color: var(--color-neutral-300);
+  font-size: var(--typography-body-b-3-fontsize);
+}

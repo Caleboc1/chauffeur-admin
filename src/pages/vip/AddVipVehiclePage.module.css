@@ -1,0 +1,118 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  padding: var(--spacing-6);
+  max-width: 720px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-4);
+}
+
+.title {
+  font-size: var(--typography-headings-h-6-fontsize);
+  font-weight: var(--typography-headings-h-6-fontweight, 700);
+  color: var(--color-neutral-100);
+  margin: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-4);
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.uploadSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.uploadTitle {
+  font-size: var(--typography-body-b-1-fontsize);
+  font-weight: 600;
+  color: var(--color-neutral-300);
+  margin: 0;
+}
+
+.imagePreviewList {
+  display: flex;
+  gap: var(--spacing-3);
+  flex-wrap: wrap;
+}
+
+.imagePreview {
+  position: relative;
+  width: 120px;
+  height: 90px;
+  border-radius: var(--stroke-2);
+  overflow: hidden;
+  border: var(--stroke-0) solid var(--color-neutral-800);
+}
+
+.imagePreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.removeBtn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.uploadBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-1);
+  width: 120px;
+  height: 90px;
+  border: 2px dashed var(--color-neutral-800);
+  border-radius: var(--stroke-2);
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  font-size: var(--typography-body-b-4-fontsize);
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.uploadBtn:hover {
+  border-color: var(--brand-gold);
+  color: var(--brand-gold);
+}
+
+.uploadBtn input {
+  display: none;
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-4);
+  justify-content: flex-end;
+}

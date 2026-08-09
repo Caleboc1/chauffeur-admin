@@ -1,0 +1,64 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.title {
+  font-size: var(--typography-headings-h-6-fontsize);
+  font-weight: var(--typography-headings-h-6-fontweight, 700);
+  color: var(--color-neutral-100);
+  margin: 0;
+}
+
+.subtitle {
+  font-size: var(--md-sys-typescale-body-large-size);
+  color: var(--color-neutral-500);
+  margin: 0;
+}
+
+.tabSwitcher {
+  display: flex;
+  background-color: var(--color-layer-2);
+  padding: var(--spacing-1);
+  border-radius: var(--stroke-2);
+  border: var(--stroke-0) solid var(--color-neutral-800);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
+  border: none;
+  background: transparent;
+  color: var(--color-neutral-600);
+  font-size: var(--typography-body-b-3-fontsize);
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: var(--stroke-1);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: var(--color-neutral-200);
+}
+
+.active {
+  background-color: var(--color-layer-3);
+  color: var(--color-primary-400) !important;
+  box-shadow: var(--effect-e1);
+}

@@ -1,0 +1,68 @@
+.card {
+  background: #fff;
+  border: 1px solid var(--color-neutral-800);
+  border-radius: var(--stroke-3);
+  box-shadow: var(--effect-e2);
+  padding: 1.5rem;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-neutral-100);
+  margin-bottom: 1rem;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-layer-3);
+  border-radius: var(--stroke-2);
+  padding: 0.625rem 0.875rem;
+}
+
+.rowLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--color-icon);
+  flex-shrink: 0;
+}
+
+.label {
+  font-size: 0.875rem;
+  color: var(--color-neutral-100);
+  font-weight: 500;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  padding: 0 0.5rem;
+}
+
+.accepted { background: var(--color-green-alpha-10); color: var(--color-green-100); }
+.onTheWay { background: var(--color-primary-alpha-10); color: var(--color-primary-400); }
+.arrived  { background: var(--color-yellow-alpha-10); color: var(--color-yellow-100); }
+.pickup   { background: var(--color-orange-alpha-10); color: var(--color-orange-100); }
+.starting { background: var(--color-yellow-alpha-10); color: var(--color-yellow-100); }
+.completed { background: var(--color-green-alpha-10); color: var(--color-green-100); }
+.cancelled { background: var(--color-red-alpha-10); color: var(--color-red-100); }

@@ -1,0 +1,76 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-0) var(--spacing-2);
+  border-radius: var(--stroke-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  width: max-content;
+}
+
+.success {
+  color: var(--color-green-200);
+  background-color: var(--color-green-alpha-10);
+}
+
+.warning {
+  color: var(--color-yellow-200);
+  background-color: var(--color-yellow-alpha-10);
+}
+
+.danger {
+  color: var(--color-red-100);
+  background-color: var(--color-red-alpha-10);
+}
+
+.info {
+  color: var(--color-secondary-200);
+  background-color: var(--color-secondary-alpha-10);
+}
+
+.orange {
+  color: var(--color-orange-200);
+  background-color: var(--color-orange-alpha-10);
+}
+
+.neutral {
+  color: var(--color-neutral-600);
+  background-color: var(--color-neutral-alpha-10);
+}
+
+.driverStatusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: var(--stroke-1);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: normal;
+  text-align: center;
+  width: max-content;
+}
+
+.driverActive {
+  background: var(--color-driver-active-bg);
+  color: var(--color-driver-active-text);
+}
+
+.driverInactive {
+  background: var(--color-driver-inactive-bg);
+  color: var(--color-driver-inactive-text);
+}
+
+.driverSuspended {
+  background: var(--color-driver-suspended-bg);
+  color: var(--color-driver-suspended-text);
+}
+
+.driverReview {
+  background: var(--color-driver-review-bg);
+  color: var(--color-driver-review-text);
+}

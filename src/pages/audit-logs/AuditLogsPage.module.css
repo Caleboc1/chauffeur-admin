@@ -1,0 +1,102 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-8);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.title {
+  font-size: var(--typography-headings-h-6-fontsize);
+  font-weight: var(--typography-headings-h-6-fontweight, 700);
+  color: var(--color-neutral-100);
+}
+
+.subtitle {
+  font-size: var(--md-sys-typescale-body-large-size);
+  color: var(--color-neutral-500);
+}
+
+.tableWrapper {
+  background-color: var(--color-layer-1);
+  padding: var(--spacing-6);
+  border: var(--stroke-0) solid var(--color-neutral-800);
+  border-radius: var(--stroke-3);
+  box-shadow: var(--effect-e1);
+}
+
+.tableToolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: var(--color-layer-2);
+  border-radius: var(--stroke-2);
+  margin-bottom: var(--spacing-6);
+  color: var(--color-neutral-500);
+  font-size: var(--typography-body-b-3-fontsize);
+}
+
+.securityIcon {
+  color: var(--color-red-100);
+}
+
+.timestamp {
+  font-family: monospace;
+  color: var(--color-neutral-300);
+}
+
+.actorCell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  color: var(--color-neutral-100);
+  font-weight: 600;
+}
+
+.roleLabel {
+  font-size: var(--typography-body-b-4-fontsize);
+  color: var(--color-neutral-500);
+  font-weight: 500;
+}
+
+.actionCode {
+  font-family: monospace;
+  background-color: var(--color-layer-2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--brand-gold);
+}
+
+.entityLabel {
+  text-transform: uppercase;
+  font-size: var(--typography-body-b-4-fontsize);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--color-neutral-400);
+}
+
+.ipText {
+  color: var(--color-neutral-600);
+  font-family: monospace;
+}
+
+.metaBtn {
+  background: none;
+  border: none;
+  color: var(--color-secondary-200);
+  cursor: help;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

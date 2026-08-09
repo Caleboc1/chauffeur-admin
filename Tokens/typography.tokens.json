@@ -1,0 +1,608 @@
+{
+    "typography": {
+        "button texts": {
+            "fontSize": {
+                "type": "dimension",
+                "value": 14
+            },
+            "textDecoration": {
+                "type": "string",
+                "value": "none"
+            },
+            "fontFamily": {
+                "type": "string",
+                "value": "Inter"
+            },
+            "fontWeight": {
+                "type": "number",
+                "value": 700
+            },
+            "fontStyle": {
+                "type": "string",
+                "value": "normal"
+            },
+            "fontStretch": {
+                "type": "string",
+                "value": "normal"
+            },
+            "letterSpacing": {
+                "type": "dimension",
+                "value": 0
+            },
+            "lineHeight": {
+                "type": "dimension",
+                "value": 21
+            },
+            "paragraphIndent": {
+                "type": "dimension",
+                "value": 0
+            },
+            "paragraphSpacing": {
+                "type": "dimension",
+                "value": 0
+            },
+            "textCase": {
+                "type": "string",
+                "value": "none"
+            }
+        },
+        "global tokens": {
+            "headings": {
+                "h-1": {
+                    "fontSize": {
+                        "type": "dimension",
+                        "value": 58
+                    },
+                    "textDecoration": {
+                        "type": "string",
+                        "value": "none"
+                    },
+                    "fontFamily": {
+                        "type": "string",
+                        "value": "Inter"
+                    },
+                    "fontWeight": {
+                        "type": "number",
+                        "value": 700
+                    },
+                    "fontStyle": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "fontStretch": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "letterSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "lineHeight": {
+                        "type": "dimension",
+                        "value": 87
+                    },
+                    "paragraphIndent": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "paragraphSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "textCase": {
+                        "type": "string",
+                        "value": "none"
+                    }
+                },
+                "h-2": {
+                    "fontSize": {
+                        "type": "dimension",
+                        "value": 48
+                    },
+                    "textDecoration": {
+                        "type": "string",
+                        "value": "none"
+                    },
+                    "fontFamily": {
+                        "type": "string",
+                        "value": "Inter"
+                    },
+                    "fontWeight": {
+                        "type": "number",
+                        "value": 700
+                    },
+                    "fontStyle": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "fontStretch": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "letterSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "lineHeight": {
+                        "type": "dimension",
+                        "value": 72
+                    },
+                    "paragraphIndent": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "paragraphSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "textCase": {
+                        "type": "string",
+                        "value": "none"
+                    }
+                },
+                "h-3": {
+                    "fontSize": {
+                        "type": "dimension",
+                        "value": 40
+                    },
+                    "textDecoration": {
+                        "type": "string",
+                        "value": "none"
+                    },
+                    "fontFamily": {
+                        "type": "string",
+                        "value": "Inter"
+                    },
+                    "fontWeight": {
+                        "type": "number",
+                        "value": 700
+                    },
+                    "fontStyle": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "fontStretch": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "letterSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "lineHeight": {
+                        "type": "dimension",
+                        "value": 60
+                    },
+                    "paragraphIndent": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "paragraphSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "textCase": {
+                        "type": "string",
+                        "value": "none"
+                    }
+                },
+                "h-4": {
+                    "fontSize": {
+                        "type": "dimension",
+                        "value": 34
+                    },
+                    "textDecoration": {
+                        "type": "string",
+                        "value": "none"
+                    },
+                    "fontFamily": {
+                        "type": "string",
+                        "value": "Inter"
+                    },
+                    "fontWeight": {
+                        "type": "number",
+                        "value": 700
+                    },
+                    "fontStyle": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "fontStretch": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "letterSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "lineHeight": {
+                        "type": "dimension",
+                        "value": 45
+                    },
+                    "paragraphIndent": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "paragraphSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "textCase": {
+                        "type": "string",
+                        "value": "none"
+                    }
+                },
+                "h-5": {
+                    "fontSize": {
+                        "type": "dimension",
+                        "value": 28
+                    },
+                    "textDecoration": {
+                        "type": "string",
+                        "value": "none"
+                    },
+                    "fontFamily": {
+                        "type": "string",
+                        "value": "Inter"
+                    },
+                    "fontWeight": {
+                        "type": "number",
+                        "value": 700
+                    },
+                    "fontStyle": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "fontStretch": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "letterSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "lineHeight": {
+                        "type": "dimension",
+                        "value": 36
+                    },
+                    "paragraphIndent": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "paragraphSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "textCase": {
+                        "type": "string",
+                        "value": "none"
+                    }
+                },
+                "h-6": {
+                    "fontSize": {
+                        "type": "dimension",
+                        "value": 24
+                    },
+                    "textDecoration": {
+                        "type": "string",
+                        "value": "none"
+                    },
+                    "fontFamily": {
+                        "type": "string",
+                        "value": "Inter"
+                    },
+                    "fontWeight": {
+                        "type": "number",
+                        "value": 700
+                    },
+                    "fontStyle": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "fontStretch": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "letterSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "lineHeight": {
+                        "type": "dimension",
+                        "value": 36
+                    },
+                    "paragraphIndent": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "paragraphSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "textCase": {
+                        "type": "string",
+                        "value": "none"
+                    }
+                },
+                "h-7": {
+                    "fontSize": {
+                        "type": "dimension",
+                        "value": 20
+                    },
+                    "textDecoration": {
+                        "type": "string",
+                        "value": "none"
+                    },
+                    "fontFamily": {
+                        "type": "string",
+                        "value": "Inter"
+                    },
+                    "fontWeight": {
+                        "type": "number",
+                        "value": 600
+                    },
+                    "fontStyle": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "fontStretch": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "letterSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "lineHeight": {
+                        "type": "dimension",
+                        "value": 24
+                    },
+                    "paragraphIndent": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "paragraphSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "textCase": {
+                        "type": "string",
+                        "value": "none"
+                    }
+                }
+            },
+            "body": {
+                "b-1": {
+                    "fontSize": {
+                        "type": "dimension",
+                        "value": 16
+                    },
+                    "textDecoration": {
+                        "type": "string",
+                        "value": "none"
+                    },
+                    "fontFamily": {
+                        "type": "string",
+                        "value": "Inter"
+                    },
+                    "fontWeight": {
+                        "type": "number",
+                        "value": 500
+                    },
+                    "fontStyle": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "fontStretch": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "letterSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "lineHeight": {
+                        "type": "dimension",
+                        "value": 24
+                    },
+                    "paragraphIndent": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "paragraphSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "textCase": {
+                        "type": "string",
+                        "value": "none"
+                    }
+                },
+                "b-2": {
+                    "fontSize": {
+                        "type": "dimension",
+                        "value": 14
+                    },
+                    "textDecoration": {
+                        "type": "string",
+                        "value": "none"
+                    },
+                    "fontFamily": {
+                        "type": "string",
+                        "value": "Inter"
+                    },
+                    "fontWeight": {
+                        "type": "number",
+                        "value": 500
+                    },
+                    "fontStyle": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "fontStretch": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "letterSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "lineHeight": {
+                        "type": "dimension",
+                        "value": 21
+                    },
+                    "paragraphIndent": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "paragraphSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "textCase": {
+                        "type": "string",
+                        "value": "none"
+                    }
+                },
+                "b-3": {
+                    "fontSize": {
+                        "type": "dimension",
+                        "value": 12
+                    },
+                    "textDecoration": {
+                        "type": "string",
+                        "value": "none"
+                    },
+                    "fontFamily": {
+                        "type": "string",
+                        "value": "Inter"
+                    },
+                    "fontWeight": {
+                        "type": "number",
+                        "value": 400
+                    },
+                    "fontStyle": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "fontStretch": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "letterSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "lineHeight": {
+                        "type": "dimension",
+                        "value": 18
+                    },
+                    "paragraphIndent": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "paragraphSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "textCase": {
+                        "type": "string",
+                        "value": "none"
+                    }
+                },
+                "b-4": {
+                    "fontSize": {
+                        "type": "dimension",
+                        "value": 10
+                    },
+                    "textDecoration": {
+                        "type": "string",
+                        "value": "none"
+                    },
+                    "fontFamily": {
+                        "type": "string",
+                        "value": "Inter"
+                    },
+                    "fontWeight": {
+                        "type": "number",
+                        "value": 500
+                    },
+                    "fontStyle": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "fontStretch": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "letterSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "lineHeight": {
+                        "type": "dimension",
+                        "value": 14
+                    },
+                    "paragraphIndent": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "paragraphSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "textCase": {
+                        "type": "string",
+                        "value": "none"
+                    }
+                },
+                "b-5": {
+                    "fontSize": {
+                        "type": "dimension",
+                        "value": 8
+                    },
+                    "textDecoration": {
+                        "type": "string",
+                        "value": "none"
+                    },
+                    "fontFamily": {
+                        "type": "string",
+                        "value": "Inter"
+                    },
+                    "fontWeight": {
+                        "type": "number",
+                        "value": 500
+                    },
+                    "fontStyle": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "fontStretch": {
+                        "type": "string",
+                        "value": "normal"
+                    },
+                    "letterSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "lineHeight": {
+                        "type": "dimension",
+                        "value": 12
+                    },
+                    "paragraphIndent": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "paragraphSpacing": {
+                        "type": "dimension",
+                        "value": 0
+                    },
+                    "textCase": {
+                        "type": "string",
+                        "value": "none"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,230 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.title {
+  font-size: var(--typography-headings-h-6-fontsize);
+  font-weight: var(--typography-headings-h-6-fontweight, 700);
+  color: var(--color-neutral-100);
+  margin: 0;
+}
+
+.subtitle {
+  font-size: var(--typography-body-b-2-fontsize);
+  color: var(--color-neutral-500);
+}
+
+.tabs {
+  display: flex;
+  gap: var(--spacing-1);
+  border-bottom: var(--stroke-0) solid var(--color-neutral-800);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-5);
+  color: var(--color-neutral-500);
+  font-size: var(--typography-body-b-2-fontsize);
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  color: var(--color-neutral-200);
+}
+
+.activeTab {
+  color: var(--color-neutral-100);
+  border-bottom-color: var(--brand-gold);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.composeForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.card {
+  background-color: var(--color-layer-1);
+  border: var(--stroke-0) solid var(--color-neutral-800);
+  border-radius: var(--stroke-3);
+  padding: var(--spacing-6);
+}
+
+.cardTitle {
+  font-size: var(--typography-body-b-1-fontsize);
+  font-weight: 700;
+  color: var(--color-neutral-100);
+  margin: 0 0 var(--spacing-4) 0;
+}
+
+.channelGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-3);
+}
+
+.channelOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-5);
+  border: var(--stroke-0) solid var(--color-neutral-800);
+  border-radius: var(--stroke-2);
+  background: var(--color-layer-2);
+  color: var(--color-neutral-400);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: var(--typography-body-b-3-fontsize);
+  font-weight: 600;
+}
+
+.channelOption:hover {
+  border-color: var(--color-neutral-600);
+  color: var(--color-neutral-200);
+}
+
+.channelActive {
+  border-color: var(--brand-gold);
+  background-color: var(--color-secondary-alpha-10);
+  color: var(--color-neutral-100);
+}
+
+.audienceGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
+
+.audienceOption {
+  padding: var(--spacing-2) var(--spacing-4);
+  border: var(--stroke-0) solid var(--color-neutral-800);
+  border-radius: var(--stroke-2);
+  background: var(--color-layer-2);
+  color: var(--color-neutral-400);
+  cursor: pointer;
+  font-size: var(--typography-body-b-3-fontsize);
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.audienceOption:hover {
+  border-color: var(--color-neutral-600);
+}
+
+.audienceActive {
+  border-color: var(--brand-gold);
+  background-color: var(--color-secondary-alpha-10);
+  color: var(--color-neutral-100);
+}
+
+.userIdInput {
+  margin-top: var(--spacing-4);
+  max-width: 320px;
+}
+
+.composeFields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.fieldLabel {
+  font-size: var(--typography-body-b-2-fontsize);
+  font-weight: 600;
+  color: var(--color-neutral-300);
+}
+
+.required {
+  color: var(--color-red-100);
+}
+
+.textarea {
+  padding: var(--spacing-3);
+  background-color: var(--color-layer-2);
+  border: var(--stroke-0) solid var(--color-neutral-800);
+  border-radius: var(--stroke-2);
+  color: var(--color-neutral-100);
+  font-family: inherit;
+  font-size: var(--typography-body-b-2-fontsize);
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.5;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--brand-gold);
+  box-shadow: 0 0 0 2px var(--color-secondary-alpha-10);
+}
+
+.textarea::placeholder {
+  color: var(--color-neutral-600);
+}
+
+.sendRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4) var(--spacing-6);
+  background-color: var(--color-layer-2);
+  border: var(--stroke-0) solid var(--color-neutral-800);
+  border-radius: var(--stroke-3);
+}
+
+.sendInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--typography-body-b-3-fontsize);
+  color: var(--color-neutral-500);
+}
+
+.channelCell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  text-transform: uppercase;
+  font-size: var(--typography-body-b-4-fontsize);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.bodyPreview {
+  max-width: 240px;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-neutral-500);
+}
