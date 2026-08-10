@@ -26,6 +26,7 @@ import VipPage from './pages/vip/VipPage';
 import VipBookingDetailPage from './pages/vip/VipBookingDetailPage';
 import VipFleetDetailPage from './pages/vip/VipFleetDetailPage';
 import AddVipVehiclePage from './pages/vip/AddVipVehiclePage';
+import EscortManagementPage from './pages/escort-management/EscortManagementPage';
 import ContentPage from './pages/content/ContentPage';
 import ContentEditorPage from './pages/content/ContentEditorPage';
 import SosPage from './pages/sos/SosPage';
@@ -80,6 +81,7 @@ function App() {
 
             {/* VIP Module */}
             <Route path="/vip" element={<VipPage />} />
+            <Route path="/vip/escort-management" element={<EscortManagementPage />} />
             <Route path="/vip/bookings/:id" element={<VipBookingDetailPage />} />
             <Route path="/vip/fleet/:id" element={<VipFleetDetailPage />} />
             <Route path="/vip/fleet/new" element={<AddVipVehiclePage />} />

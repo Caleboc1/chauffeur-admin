@@ -16,6 +16,7 @@ export const ROLE_PERMISSIONS = {
     'riders:read',
     'notifications',
     'vip',
+    'escort-management',
     'discounts',
     'content',
     'sos'
@@ -26,6 +27,7 @@ export const ROLE_PERMISSIONS = {
     'earnings',
     'accounting',
     'discounts',
+    'escort-management',
     'riders:wallet',
     'sos'
   ],

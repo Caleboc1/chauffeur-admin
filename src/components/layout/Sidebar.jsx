@@ -21,7 +21,8 @@ import {
   Star,
   FileEdit,
   LogOut,
-  BadgePercent
+  BadgePercent,
+  ShieldCheck
 } from 'lucide-react';
 import { useRole } from '@/hooks/useRole';
 import { useSosBadge } from '@/hooks/useSosBadge';
@@ -34,6 +35,7 @@ export default function Sidebar() {
   const { activeCount } = useSosBadge();
   const { signOut } = useAuth();
   const [driversExpanded, setDriversExpanded] = useState(true);
+  const [vipExpanded, setVipExpanded] = useState(true);
 
   const navGroups = [
     {
@@ -58,7 +60,17 @@ export default function Sidebar() {
           setExpanded: setDriversExpanded
         },
         { icon: Car, label: 'Rides', path: '/rides', permission: 'rides' },
-        { icon: Star, label: 'VIP Experience', path: '/vip', permission: 'vip' },
+        {
+          icon: Star,
+          label: 'VIP Experience',
+          permission: 'vip',
+          children: [
+            { icon: Star, label: 'Overview', path: '/vip', permission: 'vip', end: true },
+            { icon: ShieldCheck, label: 'Escort Management', path: '/vip/escort-management', permission: 'escort-management' },
+          ],
+          expanded: vipExpanded,
+          setExpanded: setVipExpanded
+        },
         { icon: UserCircle, label: 'Riders', path: '/riders', permission: 'riders:read' },
       ]
     },
