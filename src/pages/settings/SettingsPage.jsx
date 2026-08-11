@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { ADMIN_ROLES } from '@/utils/constants';
 import { ROLE_PERMISSIONS } from '@/lib/rbac';
@@ -8,15 +8,8 @@ import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 import { Settings, Users, Shield, Save, UserPlus, UserMinus, CheckCircle, Edit3, CreditCard, MessageSquare, Globe, MapPin, Plus, Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
+import { adminApi, mapAdminUser } from '@/lib/adminApi';
 import styles from './SettingsPage.module.css';
-
-const MOCK_ADMINS = [
-  { id: 'a1', name: 'Super Admin', email: 'super@chauffeur.com', role: 'super_admin', status: 'active' },
-  { id: 'a2', name: 'Operations Lead', email: 'ops@chauffeur.com', role: 'ops_admin', status: 'active' },
-  { id: 'a3', name: 'Finance Manager', email: 'finance@chauffeur.com', role: 'finance_admin', status: 'active' },
-  { id: 'a4', name: 'Support Agent One', email: 'support1@chauffeur.com', role: 'support_agent', status: 'active' },
-  { id: 'a5', name: 'Inspector Joe', email: 'inspector@chauffeur.com', role: 'inspection_officer', status: 'suspended' },
-];
 
 const TABS = [
   { id: 'global', label: 'Global Settings', icon: Settings },
@@ -68,8 +61,8 @@ const MOCK_SMS_GATEWAYS = [
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('global');
-  const [admins, setAdmins] = useState(MOCK_ADMINS);
-  const [loading, setLoading] = useState(false);
+  const [admins, setAdmins] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [inviteModal, setInviteModal] = useState(false);
   const [suspendModal, setSuspendModal] = useState({ open: false, admin: null });
   const [editRoleModal, setEditRoleModal] = useState({ open: false, admin: null });
@@ -100,10 +93,51 @@ export default function SettingsPage() {
   const [showAddLanguage, setShowAddLanguage] = useState(false);
   const [newLanguage, setNewLanguage] = useState({ code: '', name: '', native: '' });
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchAdmins() {
+      setLoading(true);
+      try {
+        const [adminRows, supportRows] = await Promise.all([
+          adminApi.listUsers({ userType: 'admin', limit: 100 }).catch(() => []),
+          adminApi.listUsers({ userType: 'support', limit: 100 }).catch(() => []),
+        ]);
+        const mapped = [...adminRows, ...supportRows].map(mapAdminUser).map((user) => ({
+          id: user.id,
+          name: user.full_name,
+          email: user.email,
+          phone: user.phone,
+          role: user.userType === 'support' ? 'support_agent' : 'ops_admin',
+          status: user.status,
+        }));
+        if (!cancelled) setAdmins(mapped);
+      } catch {
+        if (!cancelled) setAdmins([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    fetchAdmins();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const handleInvite = async (_, inputValue) => {
-    const [name, email, role] = inputValue.split('|');
+    const [name, email, role, phone] = inputValue.split('|');
+    const [firstName, ...rest] = name.trim().split(/\s+/);
+    const lastName = rest.join(' ') || firstName;
+    await adminApi.inviteAdmin({
+      firstName,
+      lastName,
+      email: email.trim(),
+      phoneNumber: phone.trim(),
+      userType: role.trim() === 'support_agent' ? 'support' : 'admin',
+    });
     const newAdmin = {
-      id: `a${Date.now()}`,
+      id: `pending-${Date.now()}`,
       name: name.trim(),
       email: email.trim(),
       role: role.trim(),
@@ -471,11 +505,13 @@ export default function SettingsPage() {
               const name = fd.get('name');
               const email = fd.get('email');
               const role = fd.get('role');
-              if (!name || !email || !role) return;
-              handleInvite(null, `${name}|${email}|${role}`);
+              const phone = fd.get('phone');
+              if (!name || !email || !role || !phone) return;
+              handleInvite(null, `${name}|${email}|${role}|${phone}`);
             }}>
               <Input label="Full Name" name="name" placeholder="Full Name" required />
               <Input label="Email Address" name="email" type="email" placeholder="Email Address" required />
+              <Input label="Phone Number" name="phone" placeholder="Phone Number" required />
               <div className={styles.fieldGroup}>
                 <label className={styles.fieldLabel}>Role <span className={styles.required}>*</span></label>
                 <select name="role" className={styles.select} required>

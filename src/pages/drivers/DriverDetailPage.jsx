@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { DRIVER_STATUSES } from '@/utils/constants';
-import { MOCK_INSPECTIONS, MOCK_REVIEWS, MOCK_DOCUMENTS } from '@/utils/mockData';
-import { adminApi, mapAdminRide, mapAdminUser } from '@/lib/adminApi';
+import { MOCK_INSPECTIONS } from '@/utils/mockData';
+import { adminApi, mapAdminRating, mapAdminRide, mapAdminUser } from '@/lib/adminApi';
 import { formatDate, formatRating, formatId, formatCurrency } from '@/utils/formatters';
 import StatusBadge from '@/components/ui/StatusBadge';
 import Button from '@/components/ui/Button';
@@ -27,6 +27,58 @@ import {
 } from 'lucide-react';
 import styles from './DriverDetailPage.module.css';
 
+const KYC_DOCUMENT_FIELDS = [
+  ['passportImageUrl', 'Passport Photo'],
+  ['idFrontImageUrl', 'Government ID Front'],
+  ['idBackImageUrl', 'Government ID Back'],
+  ['vehicleFrontImageUrl', 'Vehicle Front'],
+  ['vehicleBackImageUrl', 'Vehicle Back'],
+  ['vehicleInteriorImageUrl', 'Vehicle Interior'],
+  ['vehicleDocumentsImageUrl', 'Vehicle Documents'],
+  ['vehicleInsuranceCertificateImageUrl', 'Insurance Certificate'],
+  ['vehicleLicenseImageUrl', 'Vehicle License'],
+  ['proofOfVehicleOwnershipImageUrl', 'Proof of Ownership'],
+  ['roadWorthinessCertificateImageUrl', 'Road Worthiness Certificate'],
+];
+
+function mapDriverVehicles(driver = {}, kyc = {}) {
+  if (driver.vehicle) {
+    return [driver.vehicle];
+  }
+
+  if (!kyc?.vehicleBrand && !kyc?.vehicleModel && !kyc?.vehiclePlateNumber) {
+    return [];
+  }
+
+  return [
+    {
+      id: kyc.id,
+      make: kyc.vehicleBrand || '—',
+      model: kyc.vehicleModel || kyc.vehicleType || '—',
+      year: kyc.vehicleYear || '—',
+      plate_number: kyc.vehiclePlateNumber || '—',
+      compliance_status: kyc.inspectionStatus || kyc.applicationStatus || kyc.userVerificationStatus || 'pending',
+    },
+  ];
+}
+
+function mapDriverDocuments(kyc = {}) {
+  if (!kyc) return [];
+
+  const status = kyc.userVerificationStatus || kyc.status || 'pending';
+
+  return KYC_DOCUMENT_FIELDS.flatMap(([field, label]) => {
+    const urls = Array.isArray(kyc[field]) ? kyc[field] : kyc[field] ? [kyc[field]] : [];
+
+    return urls.map((url, index) => ({
+      id: `${field}-${index}`,
+      document_type: label,
+      storage_url: url,
+      status,
+    }));
+  });
+}
+
 const TABS = [
   { id: 'overview', label: 'Overview', icon: User },
   { id: 'vehicles', label: 'Vehicles', icon: Car },
@@ -45,6 +97,7 @@ export default function DriverDetailPage() {
   const [vehicles, setVehicles] = useState([]);
   const [rides, setRides] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [documents, setDocuments] = useState([]);
   const [earnings, setEarnings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -55,20 +108,23 @@ export default function DriverDetailPage() {
       setLoading(true);
       setError('');
       try {
-        const [profile, rideRows, earningsData] = await Promise.all([
+        const [profile, rideRows, earningsData, kycRows, reviewRows] = await Promise.all([
           adminApi.getUserProfile(id),
           adminApi.listRides({ driverId: id, limit: 100 }).catch(() => []),
           apiSafeDriverEarnings(id),
+          adminApi.listUserKyc({ userId: id, limit: 20 }).catch(() => []),
+          adminApi.listRatings({ participantId: id, limit: 100 }).catch(() => []),
         ]);
         const driverData = mapAdminUser(profile);
+        const kyc = kycRows[0] || null;
         
         setDriver(driverData);
-        const vehicleData = driverData.vehicle ? [driverData.vehicle] : [];
-        const reviewData = MOCK_REVIEWS.filter(r => r.driver_id === id);
+        const vehicleData = mapDriverVehicles(driverData, kyc);
 
         setVehicles(vehicleData || []);
         setRides(rideRows.map(mapAdminRide));
-        setReviews(reviewData || []);
+        setReviews(reviewRows.map(mapAdminRating));
+        setDocuments(mapDriverDocuments(kyc));
         setEarnings(earningsData || null);
       } catch (err) {
         setError(err.message);
@@ -88,10 +144,15 @@ export default function DriverDetailPage() {
     }
   }
 
-  const handleReviewAction = (reviewId, newStatus) => {
-    setReviews(prev => prev.map(r =>
-      r.id === reviewId ? { ...r, status: newStatus, reviewed_by: 'adm-001', reviewed_at: new Date().toISOString() } : r
-    ));
+  const handleReviewAction = async (reviewId, newStatus) => {
+    try {
+      await adminApi.updateRating(reviewId, { isPublished: newStatus === 'approved' });
+      setReviews(prev => prev.map(r =>
+        r.id === reviewId ? { ...r, status: newStatus, reviewed_at: new Date().toISOString() } : r
+      ));
+    } catch (err) {
+      alert('Review update failed: ' + err.message);
+    }
   };
 
   const renderStars = (rating) => {
@@ -296,20 +357,24 @@ export default function DriverDetailPage() {
 
         {activeTab === 'documents' && (
           <div className={styles.documentsGrid}>
-            {MOCK_DOCUMENTS.filter(doc => doc.driver_id === id).length > 0 ? (
-              MOCK_DOCUMENTS.filter(doc => doc.driver_id === id).map((doc) => (
+            {documents.length > 0 ? (
+              documents.map((doc) => (
                 <div key={doc.id} className={styles.documentCard}>
                   <div className={styles.docInfo}>
                     <FileText size={24} />
                     <div>
-                      <h3 className={styles.docType}>{doc.document_type.replace(/_/g, ' ').toUpperCase()}</h3>
+                      <h3 className={styles.docType}>{doc.document_type}</h3>
                       <StatusBadge status={doc.status} />
                     </div>
                   </div>
                   <div className={styles.docActions}>
-                    <Button variant="ghost" size="sm">View Doc</Button>
-                    <Button variant="primary" size="sm" onClick={() => alert(`Document ${doc.document_type} approved`)}>Approve</Button>
-                    <Button variant="danger" size="sm">Flag Error</Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => window.open(doc.storage_url, '_blank', 'noopener,noreferrer')}
+                    >
+                      View Doc
+                    </Button>
                   </div>
                 </div>
               ))

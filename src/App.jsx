@@ -26,6 +26,12 @@ import VipPage from './pages/vip/VipPage';
 import VipBookingDetailPage from './pages/vip/VipBookingDetailPage';
 import VipFleetDetailPage from './pages/vip/VipFleetDetailPage';
 import AddVipVehiclePage from './pages/vip/AddVipVehiclePage';
+import VipApplicationsPage from './pages/vip/VipApplicationsPage';
+import VipDowngradeRequestsPage from './pages/vip/VipDowngradeRequestsPage';
+import VipInspectionQueuePage from './pages/vip/VipInspectionQueuePage';
+import VipRideRequestsPage from './pages/vip/VipRideRequestsPage';
+import VipStatesPage from './pages/vip/VipStatesPage';
+import VipVehiclesPage from './pages/vip/VipVehiclesPage';
 import EscortManagementPage from './pages/escort-management/EscortManagementPage';
 import ContentPage from './pages/content/ContentPage';
 import ContentEditorPage from './pages/content/ContentEditorPage';
@@ -82,6 +88,12 @@ function App() {
             {/* VIP Module */}
             <Route path="/vip" element={<VipPage />} />
             <Route path="/vip/escort-management" element={<EscortManagementPage />} />
+            <Route path="/vip/applications" element={<VipApplicationsPage />} />
+            <Route path="/vip/inspection-queue" element={<VipInspectionQueuePage />} />
+            <Route path="/vip/downgrade-requests" element={<VipDowngradeRequestsPage />} />
+            <Route path="/vip/ride-requests" element={<VipRideRequestsPage />} />
+            <Route path="/vip/vehicles" element={<VipVehiclesPage />} />
+            <Route path="/vip/states" element={<VipStatesPage />} />
             <Route path="/vip/bookings/:id" element={<VipBookingDetailPage />} />
             <Route path="/vip/fleet/:id" element={<VipFleetDetailPage />} />
             <Route path="/vip/fleet/new" element={<AddVipVehiclePage />} />

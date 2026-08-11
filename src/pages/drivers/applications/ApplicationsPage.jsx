@@ -4,9 +4,8 @@ import { APPLICATION_STATES } from '@/utils/constants';
 import { formatDateTime } from '@/utils/formatters';
 import DataTable from '@/components/ui/DataTable';
 import StatusBadge from '@/components/ui/StatusBadge';
+import { adminApi, mapAdminKyc } from '@/lib/adminApi';
 import styles from './ApplicationsPage.module.css';
-
-import { MOCK_APPLICATIONS } from '@/utils/mockData';
 
 const FILTER_OPTIONS = [
   { value: 'all', label: 'All' },
@@ -22,25 +21,45 @@ export default function ApplicationsPage() {
   const [filterValue, setFilterValue] = useState('all');
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    setLoading(true);
-    const filtered = filterValue === 'all' 
-      ? MOCK_APPLICATIONS 
-      : MOCK_APPLICATIONS.filter(app => app.state === filterValue);
+    let cancelled = false;
     
-    setApplications(filtered);
-    setLoading(false);
+    async function fetchApplications() {
+      setLoading(true);
+      setError('');
+      try {
+        const rows = await adminApi.listUserKyc({ limit: 100 });
+        const mapped = rows.map(mapAdminKyc);
+        const filtered = filterValue === 'all'
+          ? mapped
+          : mapped.filter((item) => item.state === filterValue || item.applicationStatus === filterValue);
+        if (!cancelled) setApplications(filtered);
+      } catch (err) {
+        if (!cancelled) {
+          setApplications([]);
+          setError(err.message);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    fetchApplications();
+    return () => {
+      cancelled = true;
+    };
   }, [filterValue]);
 
   const columns = [
     { 
       key: 'drivers', 
       label: 'Applicant',
-      render: (drivers) => (
+      render: (_, row) => (
         <div className={styles.applicantCell}>
-          <span className={styles.name}>{drivers?.full_name}</span>
-          <span className={styles.email}>{drivers?.email}</span>
+          <span className={styles.name}>{row.driverName}</span>
+          <span className={styles.email}>{row.driverEmail}</span>
         </div>
       )
     },
@@ -49,13 +68,13 @@ export default function ApplicationsPage() {
       label: 'Status',
       render: (val) => <StatusBadge status={val} />
     },
-    { 
-      key: 'submitted_at', 
+    {
+      key: 'applicationDate',
       label: 'Submitted',
       render: (val) => formatDateTime(val)
     },
-    { 
-      key: 'updated_at', 
+    {
+      key: 'updatedAt',
       label: 'Last Update',
       render: (val) => formatDateTime(val)
     }
@@ -69,6 +88,7 @@ export default function ApplicationsPage() {
       </header>
 
       <div className={styles.tableWrapper}>
+        {error && <div>{error}</div>}
         <DataTable 
           columns={columns} 
           data={applications} 

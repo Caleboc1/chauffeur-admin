@@ -22,7 +22,10 @@ import {
   FileEdit,
   LogOut,
   BadgePercent,
-  ShieldCheck
+  ShieldCheck,
+  CalendarDays,
+  Map,
+  ThumbsDown
 } from 'lucide-react';
 import { useRole } from '@/hooks/useRole';
 import { useSosBadge } from '@/hooks/useSosBadge';
@@ -66,6 +69,13 @@ export default function Sidebar() {
           permission: 'vip',
           children: [
             { icon: Star, label: 'Overview', path: '/vip', permission: 'vip', end: true },
+            { icon: FileText, label: 'Applications', path: '/vip/applications', permission: 'vip' },
+            { icon: Search, label: 'Inspection Queue', path: '/vip/inspection-queue', permission: 'vip' },
+            { icon: UserCheck, label: 'Drivers', path: '/vip?tab=drivers', permission: 'vip' },
+            { icon: ThumbsDown, label: 'Downgrade Requests', path: '/vip/downgrade-requests', permission: 'vip' },
+            { icon: CalendarDays, label: 'Ride Requests', path: '/vip/ride-requests', permission: 'vip' },
+            { icon: Truck, label: 'Vehicles', path: '/vip/vehicles', permission: 'vip' },
+            { icon: Map, label: 'States', path: '/vip/states', permission: 'vip' },
             { icon: ShieldCheck, label: 'Escort Management', path: '/vip/escort-management', permission: 'escort-management' },
           ],
           expanded: vipExpanded,

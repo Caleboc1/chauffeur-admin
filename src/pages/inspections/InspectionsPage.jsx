@@ -1,28 +1,48 @@
 import { useState, useEffect } from 'react';
-import { MOCK_INSPECTIONS, MOCK_DRIVERS, MOCK_VEHICLES } from '@/utils/mockData';
 import { formatDateTime } from '@/utils/formatters';
 import DataTable from '@/components/ui/DataTable';
 import StatusBadge from '@/components/ui/StatusBadge';
 import Button from '@/components/ui/Button';
+import { adminApi, mapAdminKyc } from '@/lib/adminApi';
 import { Plus } from 'lucide-react';
 import styles from './InspectionsPage.module.css';
 
 export default function InspectionsPage() {
   const [inspections, setInspections] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    setLoading(true);
-    const enriched = (MOCK_INSPECTIONS || []).map(ins => ({
-      ...ins,
-      drivers: ins.drivers || MOCK_DRIVERS.find(d => d.id === ins.driver_id),
-      vehicles: ins.vehicles || (() => {
-        const v = MOCK_VEHICLES.find(v => v.driver_id === ins.driver_id);
-        return v ? { plate_number: v.plate_number } : null;
-      })(),
-    }));
-    setInspections(enriched);
-    setLoading(false);
+    let cancelled = false;
+
+    async function fetchInspections() {
+      setLoading(true);
+      setError('');
+      try {
+        const rows = await adminApi.listUserKyc({ limit: 100 });
+        const mapped = rows.map(mapAdminKyc).map((item) => ({
+          ...item,
+          drivers: { full_name: item.driverName },
+          vehicles: { plate_number: item.vehiclePlateNumber },
+          scheduled_at: item.updatedAt || item.applicationDate,
+          location: [item.city, item.state, item.country].filter(Boolean).join(', ') || '—',
+          result: item.inspectionStatus,
+        }));
+        if (!cancelled) setInspections(mapped);
+      } catch (err) {
+        if (!cancelled) {
+          setInspections([]);
+          setError(err.message);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    fetchInspections();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const columns = [
@@ -65,11 +85,12 @@ export default function InspectionsPage() {
       </header>
 
       <div className={styles.tableWrapper}>
+        {error && <div>{error}</div>}
         <DataTable 
           columns={columns} 
           data={inspections} 
           loading={loading}
-          onRowClick={(row) => console.log('Open inspection detail/result modal:', row.id)}
+          onRowClick={() => {}}
           searchPlaceholder="Search by driver or location..."
         />
       </div>

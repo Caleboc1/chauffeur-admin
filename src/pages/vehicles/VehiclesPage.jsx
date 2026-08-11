@@ -2,18 +2,52 @@ import { useState, useEffect } from 'react';
 import { formatDate } from '@/utils/formatters';
 import DataTable from '@/components/ui/DataTable';
 import StatusBadge from '@/components/ui/StatusBadge';
+import { adminApi, mapAdminKyc } from '@/lib/adminApi';
 import { Car, ShieldCheck, AlertTriangle, User } from 'lucide-react';
 import styles from './VehiclesPage.module.css';
 
-import { MOCK_VEHICLES } from '@/utils/mockData';
-
 export default function VehiclesPage() {
-  const [vehicles, setVehicles] = useState(MOCK_VEHICLES);
-  const [loading, setLoading] = useState(false);
+  const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    // Demo mode: use mock data
-    setLoading(false);
+    let cancelled = false;
+
+    async function fetchVehicles() {
+      setLoading(true);
+      setError('');
+      try {
+        const rows = await adminApi.listUserKyc({ limit: 100 });
+        const mapped = rows
+          .map(mapAdminKyc)
+          .filter((item) => item.vehiclePlateNumber && item.vehiclePlateNumber !== '—')
+          .map((item) => ({
+            id: item.id,
+            make: item.vehicleBrand,
+            model: item.vehicleModel,
+            year: item.vehicleYear || '—',
+            colour: item.vehicleColour,
+            plate_number: item.vehiclePlateNumber,
+            drivers: { full_name: item.driverName },
+            compliance_status: item.state === 'approved' ? 'approved' : item.state === 'rejected' ? 'suspended' : 'inspection_due',
+            created_at: item.applicationDate,
+          }));
+        if (!cancelled) setVehicles(mapped);
+      } catch (err) {
+        if (!cancelled) {
+          setVehicles([]);
+          setError(err.message);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    fetchVehicles();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const columns = [
@@ -81,11 +115,12 @@ export default function VehiclesPage() {
       </div>
 
       <div className={styles.tableWrapper}>
+        {error && <div>{error}</div>}
         <DataTable 
           columns={columns} 
           data={vehicles} 
           loading={loading}
-          onRowClick={(row) => console.log('Navigate to vehicle/driver detail:', row.driver_id)}
+          onRowClick={() => {}}
           searchPlaceholder="Search plate numbers or models..."
         />
       </div>
