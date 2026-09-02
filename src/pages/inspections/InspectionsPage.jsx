@@ -19,8 +19,12 @@ export default function InspectionsPage() {
       setLoading(true);
       setError('');
       try {
-        const rows = await adminApi.listUserKyc({ limit: 100 });
-        const mapped = rows.map(mapAdminKyc).map((item) => ({
+        const [rows, driverRows] = await Promise.all([
+          adminApi.listUserKyc({ limit: 100 }),
+          adminApi.listUsers({ userType: 'driver', limit: 100 }).catch(() => []),
+        ]);
+        const driversById = new Map(driverRows.map((d) => [d.id || d._id, d]));
+        const mapped = rows.map((kyc) => mapAdminKyc({ ...kyc, user: driversById.get(kyc.userId) })).map((item) => ({
           ...item,
           drivers: { full_name: item.driverName },
           vehicles: { plate_number: item.vehiclePlateNumber },

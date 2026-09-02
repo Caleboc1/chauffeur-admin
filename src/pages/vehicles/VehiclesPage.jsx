@@ -18,9 +18,13 @@ export default function VehiclesPage() {
       setLoading(true);
       setError('');
       try {
-        const rows = await adminApi.listUserKyc({ limit: 100 });
+        const [rows, driverRows] = await Promise.all([
+          adminApi.listUserKyc({ limit: 100 }),
+          adminApi.listUsers({ userType: 'driver', limit: 100 }).catch(() => []),
+        ]);
+        const driversById = new Map(driverRows.map((d) => [d.id || d._id, d]));
         const mapped = rows
-          .map(mapAdminKyc)
+          .map((kyc) => mapAdminKyc({ ...kyc, user: driversById.get(kyc.userId) }))
           .filter((item) => item.vehiclePlateNumber && item.vehiclePlateNumber !== '—')
           .map((item) => ({
             id: item.id,
