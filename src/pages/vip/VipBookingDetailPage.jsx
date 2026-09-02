@@ -53,7 +53,7 @@ export default function VipBookingDetailPage() {
       </header>
 
       <div className={styles.grid}>
-        {booking.status === 'in_progress' && (
+        {booking.status === 'progress' && (
           <section className={styles.mapCard}>
             <div className={styles.mapHeader}>
               <h2 className={styles.sectionTitle}>Live Map View</h2>
@@ -142,7 +142,7 @@ export default function VipBookingDetailPage() {
           <h2 className={styles.sectionTitle}>Status Actions</h2>
           <div className={styles.actionsBox}>
             <Button variant="secondary" disabled={booking.status !== 'confirmed'}>Mark In Progress</Button>
-            <Button variant="secondary" disabled={booking.status !== 'in_progress'}>Mark Completed</Button>
+            <Button variant="secondary" disabled={booking.status !== 'progress'}>Mark Completed</Button>
             <Button variant="danger" disabled={booking.status === 'completed' || booking.status === 'cancelled'}>Cancel Booking</Button>
           </div>
         </section>

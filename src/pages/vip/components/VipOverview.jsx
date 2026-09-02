@@ -14,7 +14,7 @@ export default function VipOverview() {
 
   if (loading) return <div>Loading...</div>;
 
-  const activeBookings = bookings.filter(b => b.status === 'in_progress');
+  const activeBookings = bookings.filter(b => b.status === 'progress');
   const pendingAssignments = bookings.filter(b => b.status === 'pending' && !b.driver_id);
   const availableDrivers = vipDrivers.filter(d => d.status === 'active' && !activeBookings.some(b => b.driver_id === d.id));
   const availableVehicles = vehicles.filter(v => v.status === 'available');
@@ -42,7 +42,7 @@ export default function VipOverview() {
 
   const getDropdownAction = (row) => {
     if (row.status === 'pending' && !row.driver_id) return { icon: UserPlus, label: 'Assign Driver' };
-    if (row.status === 'in_progress') return { icon: Map, label: 'View Live Map' };
+    if (row.status === 'progress') return { icon: Map, label: 'View Live Map' };
     return { icon: Eye, label: 'View Details' };
   };
 

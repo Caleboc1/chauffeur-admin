@@ -9,7 +9,7 @@ export default function StatusBadge({ status, label }) {
       warning: ['pending', 'submitted', 'in_review', 'correction_requested', 'correction', 'requested', 'maintenance', 'medium', 'refund'],
       danger: ['rejected', 'banned', 'suspended', 'fail', 'sos_active', 'critical', 'escalated', 'high'],
       info: ['new', 'inspection_scheduled', 'document_review', 'scheduled', 'available', 'low', 'ride_payment'],
-      orange: ['in_progress', 'in_use', 'open', 'manual_adjustment'],
+      orange: ['in_progress', 'progress', 'in_use', 'open', 'manual_adjustment'],
       neutral: ['offline', 'inactive', 'closed', 'unpaid', 'unverified']
     };
 

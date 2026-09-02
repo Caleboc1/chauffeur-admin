@@ -55,7 +55,7 @@ export const COMPLAINT_STATES = {
 export const RIDE_STATUSES = {
   REQUESTED: 'requested',
   ACCEPTED: 'accepted',
-  IN_PROGRESS: 'in_progress',
+  IN_PROGRESS: 'progress',
   COMPLETED: 'completed',
   CANCELLED: 'cancelled'
 };
@@ -81,7 +81,7 @@ export const VIP_BOOKING_TYPES = {
 export const VIP_BOOKING_STATUSES = {
   PENDING:     'pending',
   CONFIRMED:   'confirmed',
-  IN_PROGRESS: 'in_progress',
+  IN_PROGRESS: 'progress',
   COMPLETED:   'completed',
   CANCELLED:   'cancelled',
 };

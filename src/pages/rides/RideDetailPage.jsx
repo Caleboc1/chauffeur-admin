@@ -52,7 +52,7 @@ export default function RideDetailPage() {
     );
   }
 
-  const isLive = ['requested', 'accepted', 'in_progress'].includes(ride.trip_status);
+  const isLive = ['requested', 'accepted', 'arrived', 'progress', 'destination', 'at_stop'].includes(ride.trip_status);
 
   return (
     <div className={styles.container}>

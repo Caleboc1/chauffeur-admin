@@ -12,7 +12,7 @@ export default function VipRideRequestsPage() {
   const stats = useMemo(() => ({
     total: vipRideRequests.length,
     requested: vipRideRequests.filter((item) => item.status === 'requested').length,
-    progress: vipRideRequests.filter((item) => item.status === 'in_progress').length,
+    progress: vipRideRequests.filter((item) => item.status === 'progress').length,
     completed: vipRideRequests.filter((item) => item.status === 'completed').length,
     escort: vipRideRequests.filter((item) => item.escortRequired).length,
   }), [vipRideRequests]);
