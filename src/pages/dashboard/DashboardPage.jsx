@@ -104,7 +104,12 @@ export default function DashboardPage() {
         const mappedDrivers = driverRows.map(mapAdminUser);
         const mappedRides = rideRows.map(mapAdminRide);
         const mappedTransactions = transactionRows.map(mapAdminTransaction);
-        const totalRevenue = Number(earnings?.totalRevenue || earnings?.totalEarnings || mappedTransactions.reduce((sum, tx) => sum + Math.max(0, tx.amount), 0));
+        const totalRevenue = Number(
+          earnings?.totalRevenue?.total ??
+            earnings?.totalRevenue?.current ??
+            earnings?.totalEarnings ??
+            mappedTransactions.reduce((sum, tx) => sum + Math.max(0, tx.amount), 0),
+        );
         const activeDrivers = mappedDrivers.filter((driver) => driver.status === 'active' || driver.isOnline).length;
         const pendingComplaints = complaintRows.filter((complaint) => !['resolved', 'closed'].includes(complaint.status || complaint.state)).length;
         const failedPayments = mappedTransactions.filter((tx) => ['failed', 'rejected'].includes(tx.status)).length;
@@ -143,7 +148,7 @@ export default function DashboardPage() {
           totalEarning: totalRevenue * 100,
           alreadyWithdrawn: 0,
           pendingWithdraw: 0,
-          totalCommission: Number(earnings?.platformCommission || earnings?.commission || 0) * 100,
+          totalCommission: Number(earnings?.totalCommission?.total ?? earnings?.totalCommission?.current ?? 0) * 100,
           rejectedWithdraw: 0,
           trend: '0%',
         });
