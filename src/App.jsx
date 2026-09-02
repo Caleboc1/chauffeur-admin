@@ -74,10 +74,6 @@ function App() {
 
             {/* Discounts Module */}
             <Route path="/discounts" element={<DiscountsPage />} />
-            <Route path="/discounts/new" element={<DiscountsPage mode="new" />} />
-            <Route path="/discounts/new/review" element={<DiscountsPage mode="new-review" />} />
-            <Route path="/discounts/:id/edit" element={<DiscountsPage mode="edit" />} />
-            <Route path="/discounts/:id/review" element={<DiscountsPage mode="review" />} />
 
             {/* Accounting Module */}
             <Route path="/accounting" element={<AccountingPage />} />
