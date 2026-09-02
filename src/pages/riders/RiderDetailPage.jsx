@@ -6,6 +6,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import Button from '@/components/ui/Button';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 import DataTable from '@/components/ui/DataTable';
+import DetailSkeleton from '@/components/ui/DetailSkeleton';
 import { 
   User, 
   Wallet, 
@@ -81,7 +82,7 @@ export default function RiderDetailPage() {
     }
   };
 
-  if (loading) return <div>Loading rider profile...</div>;
+  if (loading) return <DetailSkeleton cards={3} />;
   if (!rider) return <div>{error || 'Rider not found.'}</div>;
 
   return (

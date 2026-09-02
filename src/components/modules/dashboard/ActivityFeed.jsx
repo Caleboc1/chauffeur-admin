@@ -1,11 +1,23 @@
 import { formatRelativeTime } from '@/utils/formatters';
+import Skeleton from '@/components/ui/Skeleton';
 import styles from './ActivityFeed.module.css';
 
 /**
  * Real-time activity feed displaying recent audit logs.
  */
 export default function ActivityFeed({ activities = [], loading = false }) {
-  if (loading) return <div className={styles.loading}>Loading activity...</div>;
+  if (loading) {
+    return (
+      <div className={styles.feed}>
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} style={{ marginBottom: 12 }}>
+            <Skeleton width="80%" height="14px" style={{ marginBottom: 6 }} />
+            <Skeleton width="40%" height="12px" />
+          </div>
+        ))}
+      </div>
+    );
+  }
   if (activities.length === 0) return <div className={styles.empty}>No recent activity.</div>;
 
   return (

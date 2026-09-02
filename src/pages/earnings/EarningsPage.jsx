@@ -105,24 +105,27 @@ export default function EarningsPage() {
       </header>
 
       <div className={styles.statsGrid}>
-        <KPICard 
-          label="Total Revenue" 
-          value={formatCurrency(stats.totalRevenue)} 
-          icon={DollarSign} 
-          trend="up" 
-          trendValue={8} 
+        <KPICard
+          loading={loading}
+          label="Total Revenue"
+          value={formatCurrency(stats.totalRevenue)}
+          icon={DollarSign}
+          trend="up"
+          trendValue={8}
         />
-        <KPICard 
-          label="Platform Commission" 
-          value={formatCurrency(stats.platformCommission)} 
-          icon={Percent} 
-          trend="up" 
-          trendValue={12} 
+        <KPICard
+          loading={loading}
+          label="Platform Commission"
+          value={formatCurrency(stats.platformCommission)}
+          icon={Percent}
+          trend="up"
+          trendValue={12}
         />
-        <KPICard 
-          label="Pending Payouts" 
-          value={stats.activePayouts} 
-          icon={TrendingUp} 
+        <KPICard
+          loading={loading}
+          label="Pending Payouts"
+          value={stats.activePayouts}
+          icon={TrendingUp}
         />
       </div>
 

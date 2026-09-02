@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useVip } from '@/hooks/useVip';
 import StatusBadge from '@/components/ui/StatusBadge';
 import DataTable from '@/components/ui/DataTable';
+import Skeleton from '@/components/ui/Skeleton';
 import { MoreVertical, UserPlus, Map, Eye } from 'lucide-react';
 import styles from './VipOverview.module.css';
 
@@ -11,8 +12,6 @@ export default function VipOverview() {
   const navigate = useNavigate();
   const [openMenu, setOpenMenu] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
-
-  if (loading) return <div>Loading...</div>;
 
   const activeBookings = bookings.filter(b => b.status === 'progress');
   const pendingAssignments = bookings.filter(b => b.status === 'requested' && !b.driver_id);
@@ -111,19 +110,19 @@ export default function VipOverview() {
       <div className={styles.metricsGrid}>
         <div className={styles.metricCard}>
           <span className={styles.metricLabel}>Active VIP Bookings</span>
-          <span className={styles.metricValue}>{activeBookings.length}</span>
+          <span className={styles.metricValue}>{loading ? <Skeleton width="30px" height="20px" /> : activeBookings.length}</span>
         </div>
         <div className={styles.metricCard}>
           <span className={styles.metricLabel}>Pending Assignment</span>
-          <span className={styles.metricValue}>{pendingAssignments.length}</span>
+          <span className={styles.metricValue}>{loading ? <Skeleton width="30px" height="20px" /> : pendingAssignments.length}</span>
         </div>
         <div className={styles.metricCard}>
           <span className={styles.metricLabel}>Available VIP Drivers</span>
-          <span className={styles.metricValue}>{availableDrivers.length}</span>
+          <span className={styles.metricValue}>{loading ? <Skeleton width="30px" height="20px" /> : availableDrivers.length}</span>
         </div>
         <div className={styles.metricCard}>
           <span className={styles.metricLabel}>Available VIP Vehicles</span>
-          <span className={styles.metricValue}>{availableVehicles.length}</span>
+          <span className={styles.metricValue}>{loading ? <Skeleton width="30px" height="20px" /> : availableVehicles.length}</span>
         </div>
       </div>
 
@@ -132,6 +131,7 @@ export default function VipOverview() {
         <DataTable
           columns={columns}
           data={combined}
+          loading={loading}
           emptyMessage="No bookings found."
           showSearch={false}
           pageSize={10}

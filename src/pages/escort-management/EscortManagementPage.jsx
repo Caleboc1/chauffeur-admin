@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { adminApi } from '@/lib/adminApi';
 import { formatCurrency } from '@/utils/formatters';
+import Skeleton from '@/components/ui/Skeleton';
 import styles from './EscortManagementPage.module.css';
 
 const MAX_ESCORTS = 20;
@@ -146,11 +147,13 @@ export default function EscortManagementPage() {
           </div>
           <div className={styles.activeBadge}>System Setting</div>
 
-          <div className={styles.bigNumber}>{loading ? '—' : stats.availableEscortCount}</div>
+          <div className={styles.bigNumber}>
+            {loading ? <Skeleton width="60px" height="1em" /> : stats.availableEscortCount}
+          </div>
           <h2 className={styles.featureTitle}>escorts available to VIP passengers</h2>
           <div className={styles.dateLine}>
             <ShieldCheck size={16} />
-            {loading ? 'Loading backend settings...' : `${formatCurrency(stats.costPerEscort)} per escort`}
+            {loading ? <Skeleton width="140px" height="14px" /> : `${formatCurrency(stats.costPerEscort)} per escort`}
           </div>
 
           <div className={styles.progressPanel}>

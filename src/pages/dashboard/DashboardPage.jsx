@@ -11,6 +11,7 @@ import UserOverviewCard from '@/components/modules/dashboard/UserOverviewCard';
 import AdminWalletCard from '@/components/modules/dashboard/AdminWalletCard';
 import TopDriversCard from '@/components/modules/dashboard/TopDriversCard';
 import StatusBadge from '@/components/ui/StatusBadge';
+import Skeleton from '@/components/ui/Skeleton';
 import { adminApi, fullName, mapAdminRide, mapAdminTransaction, mapAdminUser } from '@/lib/adminApi';
 import styles from './DashboardPage.module.css';
 
@@ -40,6 +41,7 @@ const STATUS_FILTERS = ['All', 'active', 'inactive', 'suspended', 'under_review'
 
 export default function DashboardPage() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalRevenue: 0,
     activeDrivers: 0,
@@ -154,6 +156,8 @@ export default function DashboardPage() {
         });
       } catch {
         // Individual calls are isolated above. Leave zero/empty dashboard state on unexpected failures.
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     }
     loadDashboard();
@@ -183,10 +187,10 @@ export default function DashboardPage() {
       </header>
 
       <div className={styles.statsGrid}>
-        <KPICard label="Total Revenue" value={formatCurrency(stats.totalRevenue)} icon={DollarSign} trend="up" trendValue={12.5} />
-        <KPICard label="Active Drivers" value={stats.activeDrivers} icon={Car} trend="up" trendValue={3} />
-        <KPICard label="Total Riders" value={stats.totalRiders} icon={Users} trend="up" trendValue={8.2} />
-        <KPICard label="Pending Applications" value={stats.pendingApplications} icon={CheckCircle} trend="down" trendValue={1} />
+        <KPICard loading={loading} label="Total Revenue" value={formatCurrency(stats.totalRevenue)} icon={DollarSign} trend="up" trendValue={12.5} />
+        <KPICard loading={loading} label="Active Drivers" value={stats.activeDrivers} icon={Car} trend="up" trendValue={3} />
+        <KPICard loading={loading} label="Total Riders" value={stats.totalRiders} icon={Users} trend="up" trendValue={8.2} />
+        <KPICard loading={loading} label="Pending Applications" value={stats.pendingApplications} icon={CheckCircle} trend="down" trendValue={1} />
       </div>
 
       <div className={styles.metricCardsRow}>
@@ -276,18 +280,31 @@ export default function DashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {recentRides.map(ride => (
-                  <tr key={ride.id}>
-                    <td>{fullName(ride.riders) || 'Anonymous'}</td>
-                    <td>{ride.drivers ? fullName(ride.drivers) : 'Unassigned'}</td>
-                    <td><StatusBadge status={ride.trip_status} /></td>
-                    <td>{formatCurrency(ride.fare)}</td>
-                  </tr>
-                ))}
-                {recentRides.length === 0 && (
-                  <tr>
-                    <td colSpan="4" className={styles.emptyRow}>No recent rides</td>
-                  </tr>
+                {loading ? (
+                  Array.from({ length: 4 }).map((_, i) => (
+                    <tr key={`recent-ride-skeleton-${i}`}>
+                      <td><Skeleton height="14px" width="70%" /></td>
+                      <td><Skeleton height="14px" width="70%" /></td>
+                      <td><Skeleton height="14px" width="60px" /></td>
+                      <td><Skeleton height="14px" width="60px" /></td>
+                    </tr>
+                  ))
+                ) : (
+                  <>
+                    {recentRides.map(ride => (
+                      <tr key={ride.id}>
+                        <td>{fullName(ride.riders) || 'Anonymous'}</td>
+                        <td>{ride.drivers ? fullName(ride.drivers) : 'Unassigned'}</td>
+                        <td><StatusBadge status={ride.trip_status} /></td>
+                        <td>{formatCurrency(ride.fare)}</td>
+                      </tr>
+                    ))}
+                    {recentRides.length === 0 && (
+                      <tr>
+                        <td colSpan="4" className={styles.emptyRow}>No recent rides</td>
+                      </tr>
+                    )}
+                  </>
                 )}
               </tbody>
             </table>
@@ -348,7 +365,27 @@ export default function DashboardPage() {
             </tr>
           </thead>
           <tbody>
-            {filteredDrivers.map(d => {
+            {loading && Array.from({ length: 5 }).map((_, i) => (
+              <tr key={`driver-skeleton-${i}`}>
+                <td>
+                  <div className={styles.driverCellWrapper}>
+                    <Skeleton width="32px" height="32px" circle />
+                    <div className={styles.driverCellInfo}>
+                      <Skeleton height="14px" width="120px" style={{ marginBottom: 4 }} />
+                      <Skeleton height="12px" width="70px" />
+                    </div>
+                  </div>
+                </td>
+                <td><Skeleton height="14px" width="90%" /></td>
+                <td><Skeleton height="14px" width="90%" /></td>
+                <td><Skeleton height="14px" width="90%" /></td>
+                <td><Skeleton height="14px" width="40px" /></td>
+                <td><Skeleton height="14px" width="60px" /></td>
+                <td><Skeleton height="14px" width="80px" /></td>
+                <td></td>
+              </tr>
+            ))}
+            {!loading && filteredDrivers.map(d => {
               const vehicleStr = d.vehicle ? `${d.vehicle.make || ''} ${d.vehicle.model || ''}`.trim() || 'Vehicle' : '—';
               const plateStr = d.vehicle?.plate_number || d.vehicle?.plateNumber || '';
               return (
@@ -407,7 +444,7 @@ export default function DashboardPage() {
                 </tr>
               );
             })}
-            {filteredDrivers.length === 0 && (
+            {!loading && filteredDrivers.length === 0 && (
               <tr>
                 <td colSpan="8" className={styles.emptyRow}>No drivers match your search.</td>
               </tr>

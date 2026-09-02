@@ -25,6 +25,7 @@ import {
   ThumbsUp,
   ThumbsDown
 } from 'lucide-react';
+import DetailSkeleton from '@/components/ui/DetailSkeleton';
 import styles from './DriverDetailPage.module.css';
 
 const KYC_DOCUMENT_FIELDS = [
@@ -175,7 +176,7 @@ export default function DriverDetailPage() {
     }
   };
 
-  if (loading) return <div>Loading driver profile...</div>;
+  if (loading) return <DetailSkeleton cards={3} />;
   if (!driver) return <div>{error || 'Driver not found.'}</div>;
 
   return (

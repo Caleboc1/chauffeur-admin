@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useContent } from '@/hooks/useContent';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import DetailSkeleton from '@/components/ui/DetailSkeleton';
 import styles from './ContentEditorPage.module.css';
 import { ArrowLeft } from 'lucide-react';
 
@@ -44,7 +45,7 @@ export default function ContentEditorPage() {
     navigate('/content');
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <DetailSkeleton cards={1} />;
 
   return (
     <div className={styles.container}>

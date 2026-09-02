@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useVip } from '@/hooks/useVip';
 import StatusBadge from '@/components/ui/StatusBadge';
 import Button from '@/components/ui/Button';
+import DetailSkeleton from '@/components/ui/DetailSkeleton';
 import styles from './VipBookingDetailPage.module.css';
 import { ArrowLeft, Star, Navigation } from 'lucide-react';
 
@@ -37,7 +38,7 @@ export default function VipBookingDetailPage() {
     }
   }, [id, bookings, loading]);
 
-  if (loading) return <div>Loading booking details...</div>;
+  if (loading) return <DetailSkeleton cards={3} />;
   if (!booking) return <div>Booking not found.</div>;
 
   return (

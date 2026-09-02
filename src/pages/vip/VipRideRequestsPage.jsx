@@ -3,6 +3,7 @@ import DataTable from '@/components/ui/DataTable';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { formatCurrency, formatDate } from '@/utils/formatters';
 import { useVip } from '@/hooks/useVip';
+import Skeleton from '@/components/ui/Skeleton';
 import styles from './VipModulePages.module.css';
 
 export default function VipRideRequestsPage() {
@@ -27,11 +28,11 @@ export default function VipRideRequestsPage() {
       </header>
 
       <div className={`${styles.metricsGrid} ${styles.metricsGridFive}`}>
-        <Metric label="Total Requests" value={stats.total} />
-        <Metric label="Requested" value={stats.requested} />
-        <Metric label="In Progress" value={stats.progress} />
-        <Metric label="Completed Today" value={stats.completed} />
-        <Metric label="Escort Required" value={stats.escort} />
+        <Metric loading={loading} label="Total Requests" value={stats.total} />
+        <Metric loading={loading} label="Requested" value={stats.requested} />
+        <Metric loading={loading} label="In Progress" value={stats.progress} />
+        <Metric loading={loading} label="Completed Today" value={stats.completed} />
+        <Metric loading={loading} label="Escort Required" value={stats.escort} />
       </div>
 
       <section className={styles.panel}>
@@ -127,11 +128,11 @@ function DetailCard({ title, rows }) {
   );
 }
 
-function Metric({ label, value }) {
+function Metric({ label, value, loading = false }) {
   return (
     <div className={styles.metricCard}>
       <span className={styles.metricLabel}>{label}</span>
-      <span className={styles.metricValue}>{value}</span>
+      <span className={styles.metricValue}>{loading ? <Skeleton width="30px" height="20px" /> : value}</span>
     </div>
   );
 }

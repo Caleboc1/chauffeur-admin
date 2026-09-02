@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Search, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
+import Skeleton from './Skeleton';
 import styles from './DataTable.module.css';
 
 /**
@@ -85,11 +86,15 @@ export default function DataTable({
           </thead>
           <tbody>
             {loading ? (
-              <tr className={styles.emptyRow}>
-                <td colSpan={columns.length} className={styles.td}>
-                  <div className={styles.loader}>Loading...</div>
-                </td>
-              </tr>
+              Array.from({ length: Math.min(pageSize, 6) }).map((_, rowIdx) => (
+                <tr key={`skeleton-row-${rowIdx}`} className={styles.tr}>
+                  {columns.map((col, colIdx) => (
+                    <td key={col.key} className={styles.td}>
+                      <Skeleton height="14px" width={`${55 + ((rowIdx + colIdx) % 4) * 12}%`} />
+                    </td>
+                  ))}
+                </tr>
+              ))
             ) : paginatedData.length > 0 ? (
               paginatedData.map((row, idx) => (
                 <tr 

@@ -3,6 +3,7 @@ import Button from '@/components/ui/Button';
 import DataTable from '@/components/ui/DataTable';
 import StatusBadge from '@/components/ui/StatusBadge';
 import { useVip } from '@/hooks/useVip';
+import Skeleton from '@/components/ui/Skeleton';
 import styles from './VipModulePages.module.css';
 
 export default function VipVehiclesPage() {
@@ -20,11 +21,11 @@ export default function VipVehiclesPage() {
       </header>
 
       <div className={`${styles.metricsGrid} ${styles.metricsGridFive}`}>
-        <Metric label="Total Vehicles" value={vehicles.length} />
-        <Metric label="Available" value={vehicles.filter((item) => item.status === 'available').length} />
-        <Metric label="In Use" value={vehicles.filter((item) => item.status === 'in_use').length} />
-        <Metric label="In Maintenance" value={vehicles.filter((item) => item.status === 'maintenance').length} />
-        <Metric label="Operational" value={vehicles.filter((item) => item.status !== 'maintenance').length} />
+        <Metric loading={loading} label="Total Vehicles" value={vehicles.length} />
+        <Metric loading={loading} label="Available" value={vehicles.filter((item) => item.status === 'available').length} />
+        <Metric loading={loading} label="In Use" value={vehicles.filter((item) => item.status === 'in_use').length} />
+        <Metric loading={loading} label="In Maintenance" value={vehicles.filter((item) => item.status === 'maintenance').length} />
+        <Metric loading={loading} label="Operational" value={vehicles.filter((item) => item.status !== 'maintenance').length} />
       </div>
 
       <section className={styles.panel}>
@@ -50,11 +51,11 @@ export default function VipVehiclesPage() {
   );
 }
 
-function Metric({ label, value }) {
+function Metric({ label, value, loading = false }) {
   return (
     <div className={styles.metricCard}>
       <span className={styles.metricLabel}>{label}</span>
-      <span className={styles.metricValue}>{value}</span>
+      <span className={styles.metricValue}>{loading ? <Skeleton width="30px" height="20px" /> : value}</span>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useVip } from '@/hooks/useVip';
 import StatusBadge from '@/components/ui/StatusBadge';
 import Button from '@/components/ui/Button';
+import DetailSkeleton from '@/components/ui/DetailSkeleton';
 import styles from './VipFleetDetailPage.module.css';
 import { ArrowLeft, Wifi, Sofa, Droplets, Shield, Smartphone, Baby, Tv, Box } from 'lucide-react';
 
@@ -32,7 +33,7 @@ export default function VipFleetDetailPage() {
     }
   }, [id, vehicles, loading]);
 
-  if (loading) return <div>Loading vehicle details...</div>;
+  if (loading) return <DetailSkeleton cards={2} />;
   if (!vehicle) return <div>Vehicle not found.</div>;
 
   return (

@@ -1,0 +1,23 @@
+.container {
+  padding: var(--spacing-6, 24px);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-4, 16px);
+}
+
+.card {
+  background-color: var(--color-layer-1);
+  border: var(--stroke-0, 1px) solid var(--color-neutral-800);
+  border-radius: var(--stroke-3, 12px);
+  padding: var(--spacing-6, 24px);
+}

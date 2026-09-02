@@ -5,6 +5,7 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import Button from '@/components/ui/Button';
 import { formatCurrency, formatDateTime } from '@/utils/formatters';
 import { MapPin, Navigation, ArrowLeft, Clock, User, Car, ShieldAlert } from 'lucide-react';
+import DetailSkeleton from '@/components/ui/DetailSkeleton';
 import styles from './RideDetailPage.module.css';
 
 export default function RideDetailPage() {
@@ -37,7 +38,7 @@ export default function RideDetailPage() {
     };
   }, [id]);
 
-  if (loading) return <div className={styles.loading}>Loading ride details...</div>;
+  if (loading) return <DetailSkeleton cards={3} />;
 
   if (!ride) {
     return (

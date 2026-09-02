@@ -12,6 +12,7 @@ import {
   ArrowLeft,
   Eye
 } from 'lucide-react';
+import DetailSkeleton from '@/components/ui/DetailSkeleton';
 import styles from './ApplicationDetailPage.module.css';
 
 import { adminApi, mapAdminKyc } from '@/lib/adminApi';
@@ -87,7 +88,7 @@ export default function ApplicationDetailPage() {
   const cannotBeDecided = application?.state === APPLICATION_STATES.APPROVED || application?.state === APPLICATION_STATES.REJECTED;
   const canDecide = !cannotBeDecided;
 
-  if (loading) return <div className={styles.loading}>Loading application details...</div>;
+  if (loading) return <DetailSkeleton cards={2} />;
   if (error) return <div className={styles.error}>{error}</div>;
   if (!application) return <div className={styles.error}>Application not found.</div>;
 

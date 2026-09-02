@@ -1,8 +1,22 @@
 import { TrendingUp, TrendingDown } from 'lucide-react';
+import Skeleton from '@/components/ui/Skeleton';
 import styles from './KPICard.module.css';
 
-export default function KPICard({ label, value, trend, trendValue, icon: Icon }) {
+export default function KPICard({ label, value, trend, trendValue, icon: Icon, loading = false }) {
   const isPositive = trend === 'up';
+
+  if (loading) {
+    return (
+      <div className={styles.card}>
+        <Skeleton width="48px" height="48px" radius="12px" />
+        <div className={styles.separator} />
+        <div className={styles.body}>
+          <Skeleton width="70%" height="24px" style={{ marginBottom: 8 }} />
+          <Skeleton width="50%" height="14px" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.card}>

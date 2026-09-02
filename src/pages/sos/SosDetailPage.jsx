@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useSos } from '@/hooks/useSos';
 import Button from '@/components/ui/Button';
 import { ArrowLeft } from 'lucide-react';
+import DetailSkeleton from '@/components/ui/DetailSkeleton';
 import styles from './SosDetailPage.module.css';
 
 export default function SosDetailPage() {
@@ -67,7 +68,7 @@ export default function SosDetailPage() {
     setResolveReason('');
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <DetailSkeleton cards={2} />;
   if (!alert) return <div>Alert not found.</div>;
 
   return (
