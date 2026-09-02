@@ -65,6 +65,13 @@ export const adminApi = {
   listWallets: (params) => apiRequest(`/api/v1/wallet_admin${buildQuery(params)}`).then(normalizeListResponse),
   getWallet: (id) => apiRequest(`/api/v1/wallet_admin/${id}`).then(unwrapApiData),
 
+  uploadFile: (file) => {
+    const formData = new FormData();
+    formData.append('uploadedFile', file);
+    return apiRequest('/api/v1/file/upload', { method: 'POST', body: formData }).then(unwrapApiData);
+  },
+  deleteUpload: (url) => apiRequest(`/api/v1/file/delete_upload/${encodeURIComponent(url)}`, { method: 'DELETE' }).then(unwrapApiData),
+
   getSystemSettings: () => apiRequest('/api/v1/system_settings/full').then(unwrapApiData),
   updateSystemSettings: (body) => apiRequest('/api/v1/system_settings', { method: 'PATCH', body }).then(unwrapApiData),
 };

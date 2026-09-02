@@ -40,11 +40,12 @@ export async function apiRequest(path, options = {}) {
   if (!headers.has('Accept')) headers.set('Accept', 'application/json');
 
   const hasBody = options.body !== undefined && options.body !== null;
-  const body = hasBody && typeof options.body !== 'string'
+  const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
+  const body = hasBody && !isFormData && typeof options.body !== 'string'
     ? JSON.stringify(options.body)
     : options.body;
 
-  if (hasBody && !headers.has('Content-Type')) {
+  if (hasBody && !isFormData && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json');
   }
 
