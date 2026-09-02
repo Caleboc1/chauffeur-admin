@@ -34,8 +34,16 @@ export default function EarningsPage() {
         adminApi.listPayouts({ limit: 100 }).catch(() => []),
       ]);
       setStats({
-        totalRevenue: Number(earnings?.totalRevenue || earnings?.totalEarnings || earnings?.totalDriverEarnings || 0),
-        platformCommission: Number(earnings?.platformCommission || earnings?.totalPlatformCommission || earnings?.commission || 0),
+        totalRevenue: Number(
+          earnings?.totalRevenue?.total ??
+            earnings?.totalRevenue?.current ??
+            earnings?.totalEarnings ??
+            earnings?.totalDriverEarnings ??
+            0,
+        ),
+        platformCommission: Number(
+          earnings?.totalCommission?.total ?? earnings?.totalCommission?.current ?? 0,
+        ),
         activePayouts: payouts.filter((p) => !['processed', 'completed', 'paid'].includes(p.status)).length,
       });
       setPayouts(payouts);
