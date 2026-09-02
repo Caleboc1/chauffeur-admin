@@ -141,7 +141,7 @@ export default function VipBookingDetailPage() {
         <section className={styles.section}>
           <h2 className={styles.sectionTitle}>Status Actions</h2>
           <div className={styles.actionsBox}>
-            <Button variant="secondary" disabled={booking.status !== 'confirmed'}>Mark In Progress</Button>
+            <Button variant="secondary" disabled={booking.status !== 'accepted'}>Mark In Progress</Button>
             <Button variant="secondary" disabled={booking.status !== 'progress'}>Mark Completed</Button>
             <Button variant="danger" disabled={booking.status === 'completed' || booking.status === 'cancelled'}>Cancel Booking</Button>
           </div>

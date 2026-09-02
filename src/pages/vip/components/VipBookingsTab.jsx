@@ -16,8 +16,8 @@ const formatDate = (isoString) => {
 
 const FILTER_OPTIONS = [
   { value: 'all', label: 'All Statuses' },
-  { value: 'pending', label: 'Pending' },
-  { value: 'confirmed', label: 'Confirmed' },
+  { value: 'requested', label: 'Pending' },
+  { value: 'accepted', label: 'Confirmed' },
   { value: 'progress', label: 'In Progress' },
   { value: 'completed', label: 'Completed' },
   { value: 'cancelled', label: 'Cancelled' },

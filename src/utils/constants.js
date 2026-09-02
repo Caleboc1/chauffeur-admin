@@ -79,8 +79,8 @@ export const VIP_BOOKING_TYPES = {
 };
 
 export const VIP_BOOKING_STATUSES = {
-  PENDING:     'pending',
-  CONFIRMED:   'confirmed',
+  PENDING:     'requested',
+  CONFIRMED:   'accepted',
   IN_PROGRESS: 'progress',
   COMPLETED:   'completed',
   CANCELLED:   'cancelled',

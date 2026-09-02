@@ -15,11 +15,11 @@ export default function VipOverview() {
   if (loading) return <div>Loading...</div>;
 
   const activeBookings = bookings.filter(b => b.status === 'progress');
-  const pendingAssignments = bookings.filter(b => b.status === 'pending' && !b.driver_id);
+  const pendingAssignments = bookings.filter(b => b.status === 'requested' && !b.driver_id);
   const availableDrivers = vipDrivers.filter(d => d.status === 'active' && !activeBookings.some(b => b.driver_id === d.id));
   const availableVehicles = vehicles.filter(v => v.status === 'available');
 
-  const combined = [...pendingAssignments, ...bookings.filter(b => b.status !== 'pending' || b.driver_id)];
+  const combined = [...pendingAssignments, ...bookings.filter(b => b.status !== 'requested' || b.driver_id)];
 
   const formatDate = (isoString) => {
     try {
@@ -41,7 +41,7 @@ export default function VipOverview() {
   };
 
   const getDropdownAction = (row) => {
-    if (row.status === 'pending' && !row.driver_id) return { icon: UserPlus, label: 'Assign Driver' };
+    if (row.status === 'requested' && !row.driver_id) return { icon: UserPlus, label: 'Assign Driver' };
     if (row.status === 'progress') return { icon: Map, label: 'View Live Map' };
     return { icon: Eye, label: 'View Details' };
   };
@@ -71,7 +71,7 @@ export default function VipOverview() {
       key: 'status',
       label: 'Status',
       render: (v) => {
-        const map = { pending: 'pending', confirmed: 'approved', in_progress: 'in_progress', completed: 'completed' };
+        const map = { requested: 'pending', accepted: 'approved', progress: 'in_progress', completed: 'completed' };
         return <StatusBadge status={map[v] || v} />;
       },
     },
