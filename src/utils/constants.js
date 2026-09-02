@@ -31,10 +31,11 @@ export const VEHICLE_COMPLIANCE_STATUSES = {
 };
 
 export const COMPLAINT_CATEGORIES = {
-  RIDER_COMPLAINT: 'rider_complaint',
+  PASSENGER_COMPLAINT: 'passenger_complaint',
   DRIVER_COMPLAINT: 'driver_complaint',
   PAYMENT_ISSUE: 'payment_issue',
-  SAFETY_REPORT: 'safety_report'
+  SAFETY_REPORT: 'safety_report',
+  OTHER: 'other'
 };
 
 export const COMPLAINT_SEVERITIES = {

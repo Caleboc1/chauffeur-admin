@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { DRIVER_STATUSES } from '@/utils/constants';
-import { MOCK_INSPECTIONS } from '@/utils/mockData';
-import { adminApi, mapAdminRating, mapAdminRide, mapAdminUser } from '@/lib/adminApi';
+import { adminApi, mapAdminKyc, mapAdminRating, mapAdminRide, mapAdminUser } from '@/lib/adminApi';
 import { formatDate, formatRating, formatId, formatCurrency } from '@/utils/formatters';
 import StatusBadge from '@/components/ui/StatusBadge';
 import Button from '@/components/ui/Button';
@@ -20,7 +19,6 @@ import {
   Phone,
   Calendar,
   ClipboardCheck,
-  Search,
   Star,
   ThumbsUp,
   ThumbsDown
@@ -100,6 +98,7 @@ export default function DriverDetailPage() {
   const [reviews, setReviews] = useState([]);
   const [documents, setDocuments] = useState([]);
   const [earnings, setEarnings] = useState(null);
+  const [inspection, setInspection] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [modal, setModal] = useState({ open: false, action: '' });
@@ -127,6 +126,19 @@ export default function DriverDetailPage() {
         setReviews(reviewRows.map(mapAdminRating));
         setDocuments(mapDriverDocuments(kyc));
         setEarnings(earningsData || null);
+        setInspection(
+          kyc
+            ? (() => {
+                const mappedKyc = mapAdminKyc({ ...kyc, user: profile });
+                return {
+                  scheduled_at: mappedKyc.updatedAt || mappedKyc.applicationDate,
+                  location: [mappedKyc.city, mappedKyc.lga, mappedKyc.country].filter(Boolean).join(', ') || '—',
+                  result: mappedKyc.inspectionStatus,
+                  inspector_notes: profile?.userVerificationStatusReason || '—',
+                };
+              })()
+            : null,
+        );
       } catch (err) {
         setError(err.message);
       } finally {
@@ -389,17 +401,16 @@ export default function DriverDetailPage() {
           <div className={styles.tabSection}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>Physical Inspections</h2>
-              <Button variant="primary" size="sm" icon={Search}>Schedule Inspection</Button>
             </div>
-            <DataTable 
+            <DataTable
               columns={[
                 { key: 'scheduled_at', label: 'Date', render: (v) => formatDate(v) },
                 { key: 'location', label: 'Location' },
                 { key: 'result', label: 'Outcome', render: (v) => <StatusBadge status={v} /> },
                 { key: 'inspector_notes', label: 'Notes' }
               ]}
-              data={MOCK_INSPECTIONS.filter(i => i.driver_id === id)} // Render mock inspections
-              emptyMessage="No inspections scheduled yet."
+              data={inspection ? [inspection] : []}
+              emptyMessage="No KYC/inspection record on file for this driver."
             />
           </div>
         )}

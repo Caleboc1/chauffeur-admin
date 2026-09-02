@@ -3,7 +3,7 @@ import { apiRequest, buildQuery, normalizeListResponse, unwrapApiData } from './
 export const adminApi = {
   getDashboard: () => apiRequest('/api/v1/analytics_admin/dashboard').then(unwrapApiData),
   getEarningsAndCommission: () => apiRequest('/api/v1/analytics_admin/earnings_and_commission').then(unwrapApiData),
-  getRevenueOverview: () => apiRequest('/api/v1/analytics_admin/revenue_overview').then(unwrapApiData),
+  getRevenueOverview: (params) => apiRequest(`/api/v1/analytics_admin/revenue_overview${buildQuery(params)}`).then(unwrapApiData),
   getPerformanceSummary: (params) => apiRequest(`/api/v1/analytics_admin/performance_summary${buildQuery(params)}`).then(unwrapApiData),
   getTotalEarningsOverPeriod: (params) => apiRequest(`/api/v1/analytics_admin/total_earnings_over_period${buildQuery(params)}`).then(unwrapApiData),
 
@@ -34,6 +34,9 @@ export const adminApi = {
   processManyPayouts: (body) => apiRequest('/api/v1/payouts_admin/process_many', { method: 'POST', body }).then(unwrapApiData),
   listBankAccounts: (params) => apiRequest(`/api/v1/bank_accounts_admin${buildQuery(params)}`).then(normalizeListResponse),
   getBankAccount: (id) => apiRequest(`/api/v1/bank_accounts_admin/${id}`).then(unwrapApiData),
+
+  listAuditTrail: (params) => apiRequest(`/api/v1/audit_trail_admin${buildQuery(params)}`).then(normalizeListResponse),
+  getAuditTrail: (id) => apiRequest(`/api/v1/audit_trail_admin/${id}`).then(unwrapApiData),
 
   listSosAlerts: (params) => apiRequest(`/api/v1/sos_alerts_admin${buildQuery(params)}`).then(normalizeListResponse),
   getSosAlert: (id) => apiRequest(`/api/v1/sos_alerts_admin/${id}`).then(unwrapApiData),
@@ -164,6 +167,20 @@ export function mapAdminRating(rating = {}) {
     comment: rating.comment || '',
     status: rating.isPublished ? 'approved' : rating.hasAdminReviewed ? 'rejected' : 'pending',
     created_at: rating.createdAt || rating.created_at,
+  };
+}
+
+export function mapAdminAuditLog(log = {}) {
+  const user = log.user;
+  return {
+    ...log,
+    id: log.id || log._id,
+    created_at: log.createdAt,
+    actor_name: user ? fullName(user) : (log.userType ? `${log.userType} (${log.userId || 'unknown'})` : 'System'),
+    actor_role: log.userType || 'system',
+    entity_type: log.entity || '—',
+    ip_address: log.ipAddress || '—',
+    metadata: log.metaData || null,
   };
 }
 

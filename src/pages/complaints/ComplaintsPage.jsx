@@ -25,8 +25,13 @@ export default function ComplaintsPage() {
     setLoading(true);
     setError('');
     try {
-      const data = await adminApi.listComplaints({ limit: 100 });
-      setComplaints(data.map(mapAdminComplaint));
+      const [data, driverRows, riderRows] = await Promise.all([
+        adminApi.listComplaints({ limit: 100 }),
+        adminApi.listUsers({ userType: 'driver', limit: 100 }).catch(() => []),
+        adminApi.listUsers({ userType: 'user', limit: 100 }).catch(() => []),
+      ]);
+      const usersById = new Map([...driverRows, ...riderRows].map((u) => [u.id || u._id, u]));
+      setComplaints(data.map((c) => mapAdminComplaint({ ...c, user: usersById.get(c.userId) })));
     } catch (err) {
       setError(err.message);
     } finally {

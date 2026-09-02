@@ -17,25 +17,11 @@ import styles from './DashboardPage.module.css';
 
 const CHART_RANGES = [
   { label: 'Today', value: 'today' },
-  { label: 'Yesterday', value: 'yesterday' },
-  { label: 'Last 7 days', value: '7d' },
+  { label: 'This week', value: 'week' },
   { label: 'This month', value: 'month' },
-  { label: 'Last 6 months', value: '6m' },
   { label: 'This year', value: 'year' },
-  { label: 'Last year', value: 'lyear' },
+  { label: 'Last 5 years', value: 'five_years' },
 ];
-
-const CHART_DATA_BY_RANGE = {
-  today:     { labels: ['6a','8a','10a','12p','2p','4p','6p'], values: [12, 28, 45, 52, 38, 48, 62] },
-  yesterday: { labels: ['6a','8a','10a','12p','2p','4p','6p'], values: [10, 22, 40, 48, 35, 42, 55] },
-  '7d':      { labels: ['M','T','W','T','F','S','S'],         values: [65, 45, 80, 55, 90, 70, 85] },
-  month:     { labels: ['W1','W2','W3','W4'],                  values: [45, 62, 58, 78] },
-  '6m':      { labels: ['Nov','Dec','Jan','Feb','Mar','Apr'],   values: [50, 55, 48, 62, 70, 78] },
-  year:      { labels: ['Jan','Feb','Mar','Apr','May','Jun'],   values: [50, 55, 48, 62, 70, 78] },
-  lyear:     { labels: ['Jan','Feb','Mar','Apr','May','Jun'],   values: [42, 48, 52, 58, 55, 60] },
-};
-
-const REVENUE_FACTORS = { today: 112, yesterday: 98, '7d': 15.5, month: 1250, '6m': 5200, year: 6200, lyear: 5400 };
 
 const STATUS_FILTERS = ['All', 'active', 'inactive', 'suspended', 'under_review'];
 
@@ -72,15 +58,17 @@ export default function DashboardPage() {
     rejectedWithdraw: 0,
     trend: '0%',
   });
-  const [chartRange, setChartRange] = useState('7d');
+  const [chartRange, setChartRange] = useState('week');
+  const [revenueData, setRevenueData] = useState([]);
+  const [revenueLoading, setRevenueLoading] = useState(true);
   const [driverSearch, setDriverSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [openMenu, setOpenMenu] = useState(null);
   const [suspendTarget, setSuspendTarget] = useState(null);
   const [suspendReason, setSuspendReason] = useState('');
   const [suspendModalOpen, setSuspendModalOpen] = useState(false);
-  const chartData = CHART_DATA_BY_RANGE[chartRange] || CHART_DATA_BY_RANGE['7d'];
-  const chartFactor = REVENUE_FACTORS[chartRange] || REVENUE_FACTORS['7d'];
+  const [suspending, setSuspending] = useState(false);
+  const maxRevenueValue = Math.max(1, ...revenueData.map((point) => point.value));
 
   let filteredDrivers = drivers.filter(d => {
     const search = driverSearch.toLowerCase();
@@ -167,6 +155,25 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+    async function loadRevenue() {
+      setRevenueLoading(true);
+      try {
+        const data = await adminApi.getRevenueOverview({ filter: chartRange });
+        if (!cancelled) setRevenueData(Array.isArray(data) ? data : []);
+      } catch {
+        if (!cancelled) setRevenueData([]);
+      } finally {
+        if (!cancelled) setRevenueLoading(false);
+      }
+    }
+    loadRevenue();
+    return () => {
+      cancelled = true;
+    };
+  }, [chartRange]);
+
+  useEffect(() => {
     if (!openMenu) return;
     const handleClickOutside = (e) => {
       if (!e.target.closest('[data-action-menu]')) {
@@ -215,17 +222,28 @@ export default function DashboardPage() {
           </div>
           <div className={styles.chartArea}>
             <div className={styles.revenueChart}>
-              {chartData.values.map((val, i) => {
-                const barColor = val >= 70 ? 'var(--color-green-100)' : val >= 45 ? 'var(--color-primary-400)' : 'var(--color-yellow-100)';
-                return (
-                  <div key={i} className={styles.chartBarWrapper}>
-                    <div className={styles.chartBar} style={{ height: `${val}%`, backgroundColor: barColor }}>
-                      <span className={styles.barTooltip}>{formatCurrency(val * chartFactor)}</span>
-                    </div>
-                    <span className={styles.barLabel}>{chartData.labels[i]}</span>
+              {revenueLoading ? (
+                Array.from({ length: 7 }).map((_, i) => (
+                  <div key={`revenue-skeleton-${i}`} className={styles.chartBarWrapper}>
+                    <Skeleton width="70%" height={`${30 + (i % 3) * 15}%`} />
                   </div>
-                );
-              })}
+                ))
+              ) : revenueData.length === 0 ? (
+                <div className={styles.emptyRow}>No revenue data for this period.</div>
+              ) : (
+                revenueData.map((point, i) => {
+                  const pct = Math.max(2, (point.value / maxRevenueValue) * 100);
+                  const barColor = pct >= 70 ? 'var(--color-green-100)' : pct >= 45 ? 'var(--color-primary-400)' : 'var(--color-yellow-100)';
+                  return (
+                    <div key={`${point.date}-${i}`} className={styles.chartBarWrapper}>
+                      <div className={styles.chartBar} style={{ height: `${pct}%`, backgroundColor: barColor }}>
+                        <span className={styles.barTooltip}>{formatCurrency(point.value)}</span>
+                      </div>
+                      <span className={styles.barLabel}>{point.label}</span>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         </div>
@@ -479,21 +497,31 @@ export default function DashboardPage() {
             <div className={styles.modalActions}>
               <button
                 className={styles.modalCancelBtn}
+                disabled={suspending}
                 onClick={() => { setSuspendModalOpen(false); setSuspendReason(''); }}
               >
                 Cancel
               </button>
               <button
                 className={styles.suspendConfirmBtn}
-                disabled={!suspendReason.trim()}
-                onClick={() => {
-                  alert(`Suspension reason recorded: ${suspendReason.trim()}`);
-                  setSuspendModalOpen(false);
-                  setSuspendReason('');
-                  setSuspendTarget(null);
+                disabled={!suspendReason.trim() || suspending}
+                onClick={async () => {
+                  if (!suspendTarget) return;
+                  setSuspending(true);
+                  try {
+                    await adminApi.toggleBlockUser(suspendTarget.id, { status: 'suspended', statusReason: suspendReason.trim() });
+                    setDrivers((prev) => prev.map((d) => (d.id === suspendTarget.id ? { ...d, status: 'suspended' } : d)));
+                    setSuspendModalOpen(false);
+                    setSuspendReason('');
+                    setSuspendTarget(null);
+                  } catch (err) {
+                    alert('Suspension failed: ' + err.message);
+                  } finally {
+                    setSuspending(false);
+                  }
                 }}
               >
-                Confirm Suspension
+                {suspending ? 'Suspending...' : 'Confirm Suspension'}
               </button>
             </div>
           </div>
