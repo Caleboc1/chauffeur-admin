@@ -403,6 +403,77 @@ tr:last-child .matrixCell {
   flex-direction: column;
 }
 
+.faresSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.fareGlobalGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--spacing-4);
+  max-width: 640px;
+}
+
+.fareMessage {
+  padding: var(--spacing-3) var(--spacing-4);
+  border: var(--stroke-0) solid var(--color-red-300);
+  border-radius: var(--stroke-1);
+  color: var(--color-red-200);
+  background: var(--color-red-alpha-10);
+}
+
+.fareSuccess {
+  border-color: var(--color-green-300);
+  color: var(--color-green-200);
+  background: var(--color-green-alpha-10);
+}
+
+.fareTableWrapper {
+  overflow-x: auto;
+  border: var(--stroke-0) solid var(--color-neutral-800);
+  border-radius: var(--stroke-2);
+}
+
+.fareTable {
+  width: 100%;
+  min-width: 860px;
+  border-collapse: collapse;
+}
+
+.fareTable th,
+.fareTable td {
+  padding: var(--spacing-3);
+  border-bottom: var(--stroke-0) solid var(--color-neutral-800);
+  text-align: left;
+  color: var(--color-neutral-200);
+}
+
+.fareTable th {
+  color: var(--color-neutral-500);
+  font-size: var(--typography-body-b-4-fontsize);
+  text-transform: uppercase;
+}
+
+.fareTable tr:last-child td { border-bottom: none; }
+
+.fareTable input {
+  width: 100%;
+  min-width: 100px;
+  padding: var(--spacing-2);
+  border: var(--stroke-0) solid var(--color-neutral-700);
+  border-radius: var(--stroke-1);
+  color: var(--color-neutral-100);
+  background: var(--color-layer-3);
+}
+
+.fareActions { display: flex; justify-content: flex-end; }
+
+@media (max-width: 768px) {
+  .fareGlobalGrid { grid-template-columns: 1fr; }
+}
+
 .gatewayList {
   display: flex;
   flex-direction: column;

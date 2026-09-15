@@ -7,12 +7,13 @@ import StatusBadge from '@/components/ui/StatusBadge';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import ConfirmModal from '@/components/ui/ConfirmModal';
-import { Settings, Users, Shield, Save, UserPlus, UserMinus, CheckCircle, Edit3, CreditCard, MessageSquare, Globe, MapPin, Plus, Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
+import { Settings, Users, Shield, Save, UserPlus, UserMinus, CheckCircle, Edit3, CreditCard, MessageSquare, Globe, MapPin, Plus, Trash2, ToggleLeft, ToggleRight, Fuel } from 'lucide-react';
 import { adminApi, mapAdminUser } from '@/lib/adminApi';
 import styles from './SettingsPage.module.css';
 
 const TABS = [
   { id: 'global', label: 'Global Settings', icon: Settings },
+  { id: 'fares', label: 'Fares & Rates', icon: Fuel },
   { id: 'gateways', label: 'Payment Gateways', icon: CreditCard },
   { id: 'sms', label: 'SMS Gateways', icon: MessageSquare },
   { id: 'language', label: 'Language', icon: Globe },
@@ -92,6 +93,13 @@ export default function SettingsPage() {
 
   const [showAddLanguage, setShowAddLanguage] = useState(false);
   const [newLanguage, setNewLanguage] = useState({ code: '', name: '', native: '' });
+  const [fareSettings, setFareSettings] = useState(null);
+  const [fareSettingsLoaded, setFareSettingsLoaded] = useState(false);
+  const [fareForm, setFareForm] = useState({ fuelPrice: '', housePercentage: '', rideTypeFareConfig: [] });
+  const [fareLoading, setFareLoading] = useState(false);
+  const [fareSaving, setFareSaving] = useState(false);
+  const [fareError, setFareError] = useState('');
+  const [fareSuccess, setFareSuccess] = useState('');
 
   useEffect(() => {
     let cancelled = false;
@@ -124,6 +132,77 @@ export default function SettingsPage() {
       cancelled = true;
     };
   }, []);
+
+  const loadFareSettings = async () => {
+    setFareLoading(true);
+    setFareError('');
+    try {
+      const data = await adminApi.getSystemSettings();
+      const config = Array.isArray(data.rideTypeFareConfig) ? data.rideTypeFareConfig : [];
+      setFareSettings(data);
+      setFareForm({
+        fuelPrice: data.fuelPrice ?? '',
+        housePercentage: data.housePercentage ?? '',
+        rideTypeFareConfig: config.map((item) => ({
+          rideType: item.rideType,
+          minimumFare: item.minimumFare,
+          costPerKm: item.costPerKm,
+          costPerMinute: item.costPerMinute,
+          averageSpeedKmPerHour: item.averageSpeedKmPerHour,
+          multiplier: item.multiplier,
+        })),
+      });
+    } catch (error) {
+      setFareError(error.message || 'Unable to load fare settings.');
+    } finally {
+      setFareLoading(false);
+      setFareSettingsLoaded(true);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'fares' && !fareSettingsLoaded && !fareLoading) loadFareSettings();
+  }, [activeTab, fareSettingsLoaded, fareLoading]);
+
+  const updateFareConfig = (index, field, value) => {
+    setFareForm((previous) => ({
+      ...previous,
+      rideTypeFareConfig: previous.rideTypeFareConfig.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item),
+    }));
+  };
+
+  const saveFareSettings = async () => {
+    const parsedConfig = fareForm.rideTypeFareConfig.map((item) => ({
+      rideType: item.rideType,
+      minimumFare: Number(item.minimumFare),
+      costPerKm: Number(item.costPerKm),
+      costPerMinute: Number(item.costPerMinute),
+      averageSpeedKmPerHour: Number(item.averageSpeedKmPerHour),
+      multiplier: Number(item.multiplier),
+    }));
+    const invalid = parsedConfig.some((item) => !item.rideType || Object.values(item).some((value) => typeof value === 'number' && (!Number.isFinite(value) || value < 0)));
+    if (invalid || !Number.isFinite(Number(fareForm.fuelPrice)) || !Number.isFinite(Number(fareForm.housePercentage))) {
+      setFareError('Enter non-negative values for every rate field before saving.');
+      return;
+    }
+
+    setFareSaving(true);
+    setFareError('');
+    setFareSuccess('');
+    try {
+      await adminApi.updateSystemSettings({
+        fuelPrice: Number(fareForm.fuelPrice),
+        housePercentage: Number(fareForm.housePercentage),
+        rideTypeFareConfig: parsedConfig,
+      });
+      await loadFareSettings();
+      setFareSuccess('Fare settings updated successfully.');
+    } catch (error) {
+      setFareError(error.message || 'Unable to update fare settings.');
+    } finally {
+      setFareSaving(false);
+    }
+  };
 
   const handleInvite = async (_, inputValue) => {
     const [name, email, role, phone] = inputValue.split('|');
@@ -267,6 +346,28 @@ export default function SettingsPage() {
                 <Button variant="primary" icon={Save}>Save Contact Info</Button>
               </div>
             </section>
+          </div>
+        )}
+
+        {activeTab === 'fares' && (
+          <div className={styles.faresSection}>
+            <div className={styles.sectionHeaderRow}>
+              <div>
+                <h2 className={styles.sectionTitle}>Fares & Economic Rates</h2>
+                <p className={styles.sectionSubtitle}>Adjust the live backend fare inputs when fuel or operating costs change. Updates apply platform-wide by ride type.</p>
+              </div>
+              <Button variant="secondary" onClick={loadFareSettings} disabled={fareLoading || fareSaving}>Refresh</Button>
+            </div>
+            {fareError && <div className={styles.fareMessage}>{fareError}</div>}
+            {fareSuccess && <div className={`${styles.fareMessage} ${styles.fareSuccess}`}>{fareSuccess}</div>}
+            {fareLoading ? <p className={styles.sectionSubtitle}>Loading backend fare settings...</p> : <>
+              <div className={styles.fareGlobalGrid}>
+                <Input label="Fuel Price" type="number" min="0" value={fareForm.fuelPrice} onChange={(event) => setFareForm((previous) => ({ ...previous, fuelPrice: event.target.value }))} />
+                <Input label="House Percentage (%)" type="number" min="0" max="100" value={fareForm.housePercentage} onChange={(event) => setFareForm((previous) => ({ ...previous, housePercentage: event.target.value }))} />
+              </div>
+              {fareForm.rideTypeFareConfig.length === 0 ? <p className={styles.sectionSubtitle}>No ride-type rate configuration was returned by the backend.</p> : <div className={styles.fareTableWrapper}><table className={styles.fareTable}><thead><tr><th>Ride Type</th><th>Minimum Fare</th><th>Cost / km</th><th>Cost / minute</th><th>Average Speed (km/h)</th><th>Multiplier</th></tr></thead><tbody>{fareForm.rideTypeFareConfig.map((item, index) => <tr key={item.rideType}><td>{item.rideType}</td>{['minimumFare', 'costPerKm', 'costPerMinute', 'averageSpeedKmPerHour', 'multiplier'].map((field) => <td key={field}><input aria-label={`${item.rideType} ${field}`} type="number" min="0" step="any" value={item[field]} onChange={(event) => updateFareConfig(index, field, event.target.value)} /></td>)}</tr>)}</tbody></table></div>}
+              <div className={styles.fareActions}><Button variant="primary" icon={Save} onClick={saveFareSettings} disabled={fareSaving || fareForm.rideTypeFareConfig.length === 0}>{fareSaving ? 'Saving Rates...' : 'Save Fare Settings'}</Button></div>
+            </>}
           </div>
         )}
 
