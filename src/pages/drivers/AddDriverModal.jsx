@@ -1,170 +1,230 @@
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import { Upload, ChevronLeft, Check, X, Camera, FileText, Car, User, ClipboardCheck } from 'lucide-react';
+import { Camera, Car, Check, ChevronLeft, ClipboardCheck, FileText, Upload, User, X } from 'lucide-react';
+import { adminApi } from '@/lib/adminApi';
 import styles from './AddDriverModal.module.css';
 
 const STEPS = [
-  { id: 'personal', label: 'Personal Info', icon: User },
+  { id: 'personal', label: 'Driver Details', icon: User },
   { id: 'vehicle', label: 'Vehicle Details', icon: Car },
-  { id: 'documents', label: 'Documents', icon: FileText },
+  { id: 'documents', label: 'KYC Documents', icon: FileText },
   { id: 'review', label: 'Review & Submit', icon: ClipboardCheck },
 ];
 
-const INLINE_HELP = {
-  full_name: "Enter the driver's full name exactly as it appears on their government ID.",
-  email: "If the driver doesn't have an email, you can use a placeholder or help them create one.",
-  phone: "Include country code. This will be used for SMS notifications about inspections and approvals.",
-  date_of_birth: "Required for background checks. Ask the driver for their ID if unsure.",
-  residential_address: "Full residential address. Needed for emergency contact and region assignment.",
-  government_id_number: "The number from their government-issued ID (National ID, passport, etc.).",
-  vehicle_skip: "Select this if the driver hasn't secured a vehicle yet. They can add vehicle details later.",
-  plate_number: "The license plate number as shown on the vehicle registration document.",
-  docs_helper: "If the driver can't upload documents themselves, you can take photos of their physical documents using your device camera or scanner.",
-};
-
 const DOCUMENT_CONFIG = [
-  {
-    key: 'government_id',
-    label: 'Government ID',
-    icon: FileText,
-    help: 'National ID card, passport, or driver\'s license used for identity verification. Take a clear photo showing all 4 corners.',
-  },
-  {
-    key: 'drivers_licence',
-    label: 'Driver\'s Licence',
-    icon: FileText,
-    help: 'Front and back of the valid driver\'s licence. Must not be expired.',
-  },
-  {
-    key: 'vehicle_insurance',
-    label: 'Vehicle Insurance',
-    icon: FileText,
-    help: 'Valid insurance certificate for the vehicle they will drive. Must cover ride-hailing/commercial use.',
-  },
-  {
-    key: 'vehicle_registration',
-    label: 'Vehicle Registration',
-    icon: FileText,
-    help: 'Vehicle registration document (proof of ownership). If not the owner, a letter of authorization is needed.',
-  },
-  {
-    key: 'selfie',
-    label: 'Selfie / Portrait',
-    icon: Camera,
-    help: 'A clear, well-lit face photo. Ask the driver to remove sunglasses, hats, or face coverings.',
-  },
+  { key: 'pictureUrl', label: 'Portrait Photograph', required: true, icon: Camera },
+  { key: 'idFrontImageUrl', label: 'Government ID (Front)', icon: FileText },
+  { key: 'idBackImageUrl', label: 'Government ID (Back)', icon: FileText },
+  { key: 'passportImageUrl', label: 'Passport Photograph', icon: FileText },
+  { key: 'vehicleFrontImageUrl', label: 'Vehicle (Front)', icon: Car },
+  { key: 'vehicleBackImageUrl', label: 'Vehicle (Back)', icon: Car },
+  { key: 'vehicleInteriorImageUrl', label: 'Vehicle (Interior)', icon: Car },
+  { key: 'vehicleDocumentsImageUrl', label: 'Vehicle Registration', icon: FileText },
+  { key: 'vehicleInsuranceCertificateImageUrl', label: 'Insurance Certificate', icon: FileText },
+  { key: 'vehicleLicenseImageUrl', label: 'Vehicle Licence', icon: FileText },
+  { key: 'proofOfVehicleOwnershipImageUrl', label: 'Proof of Vehicle Ownership', icon: FileText },
+  { key: 'roadWorthinessCertificateImageUrl', label: 'Roadworthiness Certificate', icon: FileText },
 ];
 
-export default function AddDriverModal({ isOpen, onClose }) {
+const emptyDocuments = () => Object.fromEntries(DOCUMENT_CONFIG.map(({ key }) => [key, null]));
+
+const emptyForm = () => ({
+  phoneNumber: '',
+  password: '',
+  firstName: '',
+  middleName: '',
+  lastName: '',
+  gender: '',
+  dateOfBirth: '',
+  driverType: 'regular',
+  country: '',
+  state: '',
+  lga: '',
+  city: '',
+  idType: '',
+  idNumber: '',
+  vehicleType: '',
+  vehicleBrand: '',
+  vehicleModel: '',
+  vehiclePlateNumber: '',
+  documents: emptyDocuments(),
+});
+
+function uploadUrl(result) {
+  if (typeof result === 'string') return result;
+  const value = result?.url || result?.fileUrl || result?.uploadedFile || result?.location;
+  if (!value) throw new Error('The upload service did not return a file URL.');
+  return value;
+}
+
+export default function AddDriverModal({ isOpen, onClose, onCreated }) {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [verificationRequested, setVerificationRequested] = useState(false);
+  const [phoneVerified, setPhoneVerified] = useState(false);
+  const [verifyingPhone, setVerifyingPhone] = useState(false);
+  const [form, setForm] = useState(emptyForm);
+  const [errors, setErrors] = useState({});
   const fileInputs = useRef({});
 
-  const [form, setForm] = useState({
-    full_name: '',
-    email: '',
-    phone: '',
-    date_of_birth: '',
-    residential_address: '',
-    government_id_number: '',
-    has_vehicle: true,
-    make: '',
-    model: '',
-    year: '',
-    colour: '',
-    plate_number: '',
-    documents: {
-      government_id: { file: null, name: '', will_provide_later: false },
-      drivers_licence: { file: null, name: '', will_provide_later: false },
-      vehicle_insurance: { file: null, name: '', will_provide_later: false },
-      vehicle_registration: { file: null, name: '', will_provide_later: false },
-      selfie: { file: null, name: '', will_provide_later: false },
-    },
-  });
-
-  const [errors, setErrors] = useState({});
-
-  const update = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
-  const updateDoc = (key, field, value) => setForm(prev => ({
-    ...prev,
-    documents: {
-      ...prev.documents,
-      [key]: { ...prev.documents[key], [field]: value },
-    },
+  const update = (field, value) => {
+    if (field === 'phoneNumber' && value !== form.phoneNumber) {
+      setPhoneVerified(false);
+      setVerificationRequested(false);
+      setVerificationCode('');
+    }
+    setForm((previous) => ({ ...previous, [field]: value }));
+  };
+  const updateDocument = (key, value) => setForm((previous) => ({
+    ...previous,
+    documents: { ...previous.documents, [key]: value },
   }));
 
-  const handleFileUpload = (key, file) => {
-    updateDoc(key, 'file', file);
-    updateDoc(key, 'name', file.name);
-  };
+  function validateStep(currentStep) {
+    const nextErrors = {};
+    const requiredByStep = [
+      ['firstName', 'lastName', 'phoneNumber', 'password', 'gender', 'dateOfBirth', 'driverType', 'country', 'state', 'lga', 'city', 'idType', 'idNumber'],
+      [],
+      ['pictureUrl'],
+    ];
 
-  const validateStep = (s) => {
-    const errs = {};
-    if (s === 0) {
-      if (!form.full_name.trim()) errs.full_name = 'Full name is required';
-      if (!form.email.trim()) errs.email = 'Email is required';
-      if (!form.phone.trim()) errs.phone = 'Phone number is required';
+    (requiredByStep[currentStep] || []).forEach((field) => {
+      const value = field === 'pictureUrl' ? form.documents.pictureUrl : form[field];
+      if (!String(value || '').trim()) nextErrors[field] = 'This field is required.';
+    });
+
+    if (currentStep === 0 && form.phoneNumber.trim().length < 11) nextErrors.phoneNumber = 'Use an 11 to 15 digit phone number.';
+    if (currentStep === 0 && !phoneVerified && !nextErrors.phoneNumber) nextErrors.phoneNumber = 'Verify this phone number before continuing.';
+    if (currentStep === 0 && !/(?=.*\d)(?=.*\W).{8,}/.test(form.password)) {
+      nextErrors.password = 'Use at least 8 characters with a number and special character.';
     }
-    if (s === 1 && form.has_vehicle) {
-      if (!form.make.trim()) errs.make = 'Vehicle make is required';
-      if (!form.model.trim()) errs.model = 'Vehicle model is required';
-      if (!form.year.trim()) errs.year = 'Year is required';
-      if (!form.plate_number.trim()) errs.plate_number = 'Plate number is required';
+
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  }
+
+  function handleNext() {
+    if (validateStep(step)) setStep((current) => Math.min(current + 1, STEPS.length - 1));
+  }
+
+  async function requestPhoneVerification() {
+    if (form.phoneNumber.trim().length < 11) {
+      setErrors((previous) => ({ ...previous, phoneNumber: 'Use an 11 to 15 digit phone number.' }));
+      return;
     }
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
-  };
 
-  const canSubmit = form.full_name.trim() && form.email.trim() && form.phone.trim();
+    setVerifyingPhone(true);
+    setSubmitError('');
+    try {
+      await adminApi.requestPhoneVerification({ phoneNumber: form.phoneNumber.trim(), userType: 'driver' });
+      setVerificationRequested(true);
+      setPhoneVerified(false);
+      setVerificationCode('');
+      setErrors((previous) => ({ ...previous, phoneNumber: undefined }));
+    } catch (error) {
+      setSubmitError(error.message || 'Unable to send the verification code.');
+    } finally {
+      setVerifyingPhone(false);
+    }
+  }
 
-  const handleNext = () => {
-    if (validateStep(step)) setStep(prev => Math.min(prev + 1, STEPS.length - 1));
-  };
+  async function confirmPhoneVerification() {
+    if (!/^\d{4,6}$/.test(verificationCode)) {
+      setErrors((previous) => ({ ...previous, verificationCode: 'Enter the 4 to 6 digit verification code.' }));
+      return;
+    }
 
-  const handleBack = () => setStep(prev => Math.max(prev - 1, 0));
+    setVerifyingPhone(true);
+    setSubmitError('');
+    try {
+      await adminApi.confirmPhoneVerification({ phoneNumber: form.phoneNumber.trim(), token: verificationCode });
+      setPhoneVerified(true);
+      setErrors((previous) => ({ ...previous, phoneNumber: undefined, verificationCode: undefined }));
+    } catch (error) {
+      setSubmitError(error.message || 'Unable to verify the phone number.');
+    } finally {
+      setVerifyingPhone(false);
+    }
+  }
 
-  const handleSubmit = () => {
-    setSubmitted(true);
-  };
+  async function handleSubmit() {
+    if (![0, 1, 2].every(validateStep)) return;
 
-  const handleClose = () => {
+    setSaving(true);
+    setSubmitError('');
+    try {
+      await adminApi.registerDriver({
+        phoneNumber: form.phoneNumber.trim(),
+        password: form.password,
+      });
+
+      const uploadedDocuments = {};
+      for (const document of DOCUMENT_CONFIG) {
+        const file = form.documents[document.key];
+        if (!file) continue;
+        const result = await adminApi.uploadFile(file);
+        const url = uploadUrl(result);
+        uploadedDocuments[document.key] = document.key === 'pictureUrl' ? url : [url];
+      }
+
+      await adminApi.createAssistedUserKyc({
+        phoneNumber: form.phoneNumber.trim(),
+        password: form.password,
+        firstName: form.firstName.trim(),
+        middleName: form.middleName.trim() || undefined,
+        lastName: form.lastName.trim(),
+        gender: form.gender,
+        dateOfBirth: form.dateOfBirth,
+        driverType: form.driverType,
+        country: form.country.trim(),
+        state: form.state.trim(),
+        lga: form.lga.trim(),
+        city: form.city.trim(),
+        idType: form.idType.trim(),
+        idNumber: form.idNumber.trim(),
+        vehicleType: form.vehicleType.trim() || undefined,
+        vehicleBrand: form.vehicleBrand.trim() || undefined,
+        vehicleModel: form.vehicleModel.trim() || undefined,
+        vehiclePlateNumber: form.vehiclePlateNumber.trim() || undefined,
+        ...uploadedDocuments,
+      });
+
+      setSubmitted(true);
+      await onCreated?.();
+    } catch (error) {
+      setSubmitError(error.message || 'Unable to create the driver.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function handleClose() {
+    if (saving) return;
     setStep(0);
     setSubmitted(false);
-    setForm({
-      full_name: '', email: '', phone: '', date_of_birth: '', residential_address: '', government_id_number: '',
-      has_vehicle: true, make: '', model: '', year: '', colour: '', plate_number: '',
-      documents: {
-        government_id: { file: null, name: '', will_provide_later: false },
-        drivers_licence: { file: null, name: '', will_provide_later: false },
-        vehicle_insurance: { file: null, name: '', will_provide_later: false },
-        vehicle_registration: { file: null, name: '', will_provide_later: false },
-        selfie: { file: null, name: '', will_provide_later: false },
-      },
-    });
+    setSubmitError('');
+    setVerificationCode('');
+    setVerificationRequested(false);
+    setPhoneVerified(false);
     setErrors({});
+    setForm(emptyForm());
     onClose();
-  };
+  }
 
   if (!isOpen) return null;
 
   if (submitted) {
     return (
       <div className={styles.overlay} onClick={handleClose}>
-        <div className={styles.modal} onClick={e => e.stopPropagation()}>
+        <div className={styles.modal} onClick={(event) => event.stopPropagation()}>
           <div className={styles.successScreen}>
             <div className={styles.successIcon}><Check size={48} /></div>
-            <h2>Driver Onboarding Submitted</h2>
-            <p className={styles.successMsg}>
-              <strong>{form.full_name}</strong> has been submitted for review.
-              {form.has_vehicle
-                ? ` Their ${form.year} ${form.make} ${form.model} (${form.plate_number}) has been registered.`
-                : ' Vehicle details can be added later.'}
-            </p>
-            <p className={styles.successHint}>
-              The driver will receive a notification to complete any remaining steps.
-              You can track their application status from the Applications tab.
-            </p>
+            <h2>Driver Onboarding Created</h2>
+            <p className={styles.successMsg}><strong>{form.firstName} {form.lastName}</strong> has a driver account and an admin-assisted KYC application.</p>
             <Button variant="primary" onClick={handleClose}>Done</Button>
           </div>
         </div>
@@ -174,241 +234,117 @@ export default function AddDriverModal({ isOpen, onClose }) {
 
   return (
     <div className={styles.overlay} onClick={handleClose}>
-      <div className={styles.modal} onClick={e => e.stopPropagation()}>
+      <div className={styles.modal} onClick={(event) => event.stopPropagation()}>
         <header className={styles.modalHeader}>
           <div>
             <h2 className={styles.modalTitle}>Add Driver</h2>
-            <p className={styles.modalSubtitle}>Admin-assisted onboarding for drivers who need help registering</p>
+            <p className={styles.modalSubtitle}>Create the driver account and its admin-assisted KYC application.</p>
           </div>
-          <button className={styles.closeBtn} onClick={handleClose}><X size={20} /></button>
+          <button className={styles.closeBtn} onClick={handleClose} disabled={saving} aria-label="Close"><X size={20} /></button>
         </header>
 
         <div className={styles.stepper}>
-          {STEPS.map((s, i) => (
-            <div key={s.id} className={`${styles.stepItem} ${i <= step ? styles.stepActive : ''} ${i < step ? styles.stepDone : ''}`}>
-              <div className={styles.stepCircle}>
-                {i < step ? <Check size={14} /> : <s.icon size={14} />}
-              </div>
-              <span className={styles.stepLabel}>{s.label}</span>
-              {i < STEPS.length - 1 && <div className={`${styles.stepLine} ${i < step ? styles.stepLineDone : ''}`} />}
+          {STEPS.map((item, index) => (
+            <div key={item.id} className={`${styles.stepItem} ${index <= step ? styles.stepActive : ''} ${index < step ? styles.stepDone : ''}`}>
+              <div className={styles.stepCircle}>{index < step ? <Check size={14} /> : <item.icon size={14} />}</div>
+              <span className={styles.stepLabel}>{item.label}</span>
+              {index < STEPS.length - 1 && <div className={`${styles.stepLine} ${index < step ? styles.stepLineDone : ''}`} />}
             </div>
           ))}
         </div>
 
         <div className={styles.stepContent}>
-          {step === 0 && (
-            <div className={styles.formSection}>
-              <div className={styles.sectionNotice}>
-                <User size={18} />
-                <span>Enter the driver's personal details. You can fill these in while speaking with the driver over the phone or in person.</span>
-              </div>
-              <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                  <Input label="Full Name" placeholder="Full Name" required value={form.full_name} onChange={e => update('full_name', e.target.value)} error={errors.full_name} />
-                  <p className={styles.helperText}>{INLINE_HELP.full_name}</p>
-                </div>
-                <div className={styles.formGroup}>
-                  <Input label="Email" placeholder="Email" required type="email" value={form.email} onChange={e => update('email', e.target.value)} error={errors.email} />
-                  <p className={styles.helperText}>{INLINE_HELP.email}</p>
-                </div>
-              </div>
-              <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                  <Input label="Phone" placeholder="Phone" required value={form.phone} onChange={e => update('phone', e.target.value)} error={errors.phone} />
-                  <p className={styles.helperText}>{INLINE_HELP.phone}</p>
-                </div>
-                <div className={styles.formGroup}>
-                  <Input label="Date of Birth" type="date" value={form.date_of_birth} onChange={e => update('date_of_birth', e.target.value)} />
-                  <p className={styles.helperText}>{INLINE_HELP.date_of_birth}</p>
-                </div>
-              </div>
-              <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                  <label className={styles.fieldLabel}>Residential Address</label>
-                  <textarea className={styles.textarea} value={form.residential_address} onChange={e => update('residential_address', e.target.value)} placeholder="Full street address, city, state/province" rows={2} />
-                  <p className={styles.helperText}>{INLINE_HELP.residential_address}</p>
-                </div>
-                <div className={styles.formGroup}>
-                  <Input label="Government ID Number" placeholder="Government ID Number" value={form.government_id_number} onChange={e => update('government_id_number', e.target.value)} />
-                  <p className={styles.helperText}>{INLINE_HELP.government_id_number}</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {step === 1 && (
-            <div className={styles.formSection}>
-              <div className={styles.sectionNotice}>
-                <Car size={18} />
-                <span>Register the vehicle the driver will use. If they haven't secured a vehicle yet, you can skip this step.</span>
-              </div>
-              <label className={styles.checkboxRow}>
-                <input type="checkbox" checked={!form.has_vehicle} onChange={e => update('has_vehicle', !e.target.checked)} />
-                <span>Driver doesn't have a vehicle yet — skip vehicle details</span>
-              </label>
-              <p className={styles.helperText} style={{ marginTop: 4 }}>{INLINE_HELP.vehicle_skip}</p>
-
-              {form.has_vehicle && (
-                <>
-                  <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                      <Input label="Make" placeholder="Make" required value={form.make} onChange={e => update('make', e.target.value)} error={errors.make} />
-                    </div>
-                    <div className={styles.formGroup}>
-                      <Input label="Model" placeholder="Model" required value={form.model} onChange={e => update('model', e.target.value)} error={errors.model} />
-                    </div>
-                  </div>
-                  <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                      <Input label="Year" placeholder="Year" required type="number" value={form.year} onChange={e => update('year', e.target.value)} error={errors.year} />
-                    </div>
-                    <div className={styles.formGroup}>
-                      <Input label="Colour" placeholder="Colour" value={form.colour} onChange={e => update('colour', e.target.value)} />
-                    </div>
-                  </div>
-                  <div className={styles.formRow}>
-                    <div className={styles.formGroup}>
-                      <Input label="Plate Number" placeholder="Plate Number" required value={form.plate_number} onChange={e => update('plate_number', e.target.value)} error={errors.plate_number} />
-                      <p className={styles.helperText}>{INLINE_HELP.plate_number}</p>
-                    </div>
-                    <div className={styles.formGroup} />
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-
-          {step === 2 && (
-            <div className={styles.formSection}>
-              <div className={styles.sectionNotice}>
-                <Camera size={18} />
-                <span>{INLINE_HELP.docs_helper}</span>
-              </div>
-              {DOCUMENT_CONFIG.map(doc => {
-                const docState = form.documents[doc.key];
-                return (
-                  <div key={doc.key} className={styles.docRow}>
-                    <div className={styles.docRowHeader}>
-                      <doc.icon size={18} />
-                      <div className={styles.docRowInfo}>
-                        <strong>{doc.label}</strong>
-                        <p className={styles.helperText}>{doc.help}</p>
-                      </div>
-                    </div>
-                    <div className={styles.docRowActions}>
-                      <input
-                        type="file"
-                        accept="image/*,.pdf"
-                        ref={el => fileInputs.current[doc.key] = el}
-                        onChange={e => {
-                          if (e.target.files[0]) handleFileUpload(doc.key, e.target.files[0]);
-                        }}
-                        style={{ display: 'none' }}
-                      />
-                      {docState.file ? (
-                        <div className={styles.docUploaded}>
-                          <span className={styles.docFileName}>{docState.name}</span>
-                          <button className={styles.docRemoveBtn} onClick={() => { updateDoc(doc.key, 'file', null); updateDoc(doc.key, 'name', ''); if (fileInputs.current[doc.key]) fileInputs.current[doc.key].value = ''; }}>
-                            <X size={14} />
-                          </button>
-                        </div>
-                      ) : (
-                        <button className={styles.docUploadBtn} onClick={() => fileInputs.current[doc.key]?.click()}>
-                          <Upload size={14} />
-                          Upload
-                        </button>
-                      )}
-                      <label className={styles.docCheckbox}>
-                        <input
-                          type="checkbox"
-                          checked={docState.will_provide_later}
-                          onChange={e => updateDoc(doc.key, 'will_provide_later', e.target.checked)}
-                        />
-                        <span>Provide later</span>
-                      </label>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {step === 3 && (
-            <div className={styles.formSection}>
-              <div className={styles.sectionNotice}>
-                <ClipboardCheck size={18} />
-                <span>Review all information before submitting. You can go back to edit any section.</span>
-              </div>
-              <div className={styles.reviewBlock}>
-                <div className={styles.reviewBlockHeader}>
-                  <User size={16} />
-                  <span>Personal Information</span>
-                  <button className={styles.reviewEditBtn} onClick={() => setStep(0)}>Edit</button>
-                </div>
-                <div className={styles.reviewGrid}>
-                  <div className={styles.reviewItem}><label>Name</label><span>{form.full_name || '—'}</span></div>
-                  <div className={styles.reviewItem}><label>Email</label><span>{form.email || '—'}</span></div>
-                  <div className={styles.reviewItem}><label>Phone</label><span>{form.phone || '—'}</span></div>
-                  <div className={styles.reviewItem}><label>DOB</label><span>{form.date_of_birth || '—'}</span></div>
-                  <div className={styles.reviewItem}><label>Address</label><span>{form.residential_address || '—'}</span></div>
-                  <div className={styles.reviewItem}><label>Govt ID</label><span>{form.government_id_number || '—'}</span></div>
-                </div>
-              </div>
-              <div className={styles.reviewBlock}>
-                <div className={styles.reviewBlockHeader}>
-                  <Car size={16} />
-                  <span>Vehicle Details</span>
-                  <button className={styles.reviewEditBtn} onClick={() => setStep(1)}>Edit</button>
-                </div>
-                {form.has_vehicle ? (
-                  <div className={styles.reviewGrid}>
-                    <div className={styles.reviewItem}><label>Make</label><span>{form.make || '—'}</span></div>
-                    <div className={styles.reviewItem}><label>Model</label><span>{form.model || '—'}</span></div>
-                    <div className={styles.reviewItem}><label>Year</label><span>{form.year || '—'}</span></div>
-                    <div className={styles.reviewItem}><label>Colour</label><span>{form.colour || '—'}</span></div>
-                    <div className={styles.reviewItem}><label>Plate No.</label><span>{form.plate_number || '—'}</span></div>
-                  </div>
-                ) : (
-                  <p className={styles.reviewSkipped}>No vehicle registered — driver will add later.</p>
-                )}
-              </div>
-              <div className={styles.reviewBlock}>
-                <div className={styles.reviewBlockHeader}>
-                  <FileText size={16} />
-                  <span>Documents</span>
-                  <button className={styles.reviewEditBtn} onClick={() => setStep(2)}>Edit</button>
-                </div>
-                <div className={styles.reviewGrid}>
-                  {DOCUMENT_CONFIG.map(doc => {
-                    const ds = form.documents[doc.key];
-                    const status = ds.file ? 'Uploaded' : ds.will_provide_later ? 'Will provide later' : 'Not provided';
-                    return (
-                      <div key={doc.key} className={styles.reviewItem}>
-                        <label>{doc.label}</label>
-                        <span className={ds.file ? styles.reviewStatusOk : styles.reviewStatusPending}>{status}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          )}
+          {submitError && <div className={styles.submitError}>{submitError}</div>}
+          {step === 0 && <DriverDetails form={form} update={update} errors={errors} verificationCode={verificationCode} setVerificationCode={setVerificationCode} verificationRequested={verificationRequested} phoneVerified={phoneVerified} verifyingPhone={verifyingPhone} requestPhoneVerification={requestPhoneVerification} confirmPhoneVerification={confirmPhoneVerification} />}
+          {step === 1 && <VehicleDetails form={form} update={update} />}
+          {step === 2 && <Documents form={form} errors={errors} updateDocument={updateDocument} fileInputs={fileInputs} />}
+          {step === 3 && <Review form={form} setStep={setStep} />}
         </div>
 
         <footer className={styles.modalFooter}>
-          <Button variant="ghost" onClick={handleClose}>Cancel</Button>
+          <Button variant="ghost" onClick={handleClose} disabled={saving}>Cancel</Button>
           <div className={styles.footerRight}>
-            {step > 0 && (
-              <Button variant="ghost" onClick={handleBack} icon={ChevronLeft}>Back</Button>
-            )}
-            {step < STEPS.length - 1 ? (
-              <Button variant="primary" onClick={handleNext}>Next Step</Button>
-            ) : (
-              <Button variant="primary" disabled={!canSubmit} onClick={handleSubmit}>Submit Driver</Button>
-            )}
+            {step > 0 && <Button variant="ghost" onClick={() => setStep((current) => current - 1)} icon={ChevronLeft} disabled={saving}>Back</Button>}
+            {step < STEPS.length - 1 ? <Button variant="primary" onClick={handleNext} disabled={saving}>Next Step</Button> : <Button variant="primary" onClick={handleSubmit} disabled={saving}>{saving ? 'Creating Driver...' : 'Create Driver'}</Button>}
           </div>
         </footer>
       </div>
     </div>
   );
 }
+
+function DriverDetails({ form, update, errors, verificationCode, setVerificationCode, verificationRequested, phoneVerified, verifyingPhone, requestPhoneVerification, confirmPhoneVerification }) {
+  return <div className={styles.formSection}>
+    <div className={styles.sectionNotice}><User size={18} /><span>These fields are required by the driver signup and admin-assisted KYC endpoints.</span></div>
+    <div className={styles.formRow}>
+      <Field label="First Name" value={form.firstName} onChange={(event) => update('firstName', event.target.value)} error={errors.firstName} required />
+      <Field label="Middle Name" value={form.middleName} onChange={(event) => update('middleName', event.target.value)} />
+    </div>
+    <div className={styles.formRow}>
+      <Field label="Last Name" value={form.lastName} onChange={(event) => update('lastName', event.target.value)} error={errors.lastName} required />
+      <Field label="Phone Number" value={form.phoneNumber} onChange={(event) => update('phoneNumber', event.target.value)} error={errors.phoneNumber} required />
+    </div>
+    <div className={styles.verificationRow}>
+      {phoneVerified ? <span className={styles.verifiedPhone}><Check size={16} /> Phone number verified</span> : <Button type="button" variant="secondary" onClick={requestPhoneVerification} disabled={verifyingPhone}>{verificationRequested ? 'Resend Code' : 'Send Verification Code'}</Button>}
+      {verificationRequested && !phoneVerified && <><Input label="Verification Code" value={verificationCode} onChange={(event) => setVerificationCode(event.target.value.replace(/\D/g, ''))} error={errors.verificationCode} inputMode="numeric" maxLength={6} /><Button type="button" variant="primary" onClick={confirmPhoneVerification} disabled={verifyingPhone}>{verifyingPhone ? 'Verifying...' : 'Verify Code'}</Button></>}
+    </div>
+    <div className={styles.formRow}>
+      <Field label="Temporary Password" type="password" value={form.password} onChange={(event) => update('password', event.target.value)} error={errors.password} required />
+      <SelectField label="Gender" value={form.gender} onChange={(event) => update('gender', event.target.value)} error={errors.gender} required options={['Female', 'Male', 'Other']} />
+    </div>
+    <div className={styles.formRow}>
+      <Field label="Date of Birth" type="date" value={form.dateOfBirth} onChange={(event) => update('dateOfBirth', event.target.value)} error={errors.dateOfBirth} required />
+      <SelectField label="Driver Type" value={form.driverType} onChange={(event) => update('driverType', event.target.value)} error={errors.driverType} required options={[['regular', 'Regular'], ['vip', 'VIP']]} />
+    </div>
+    <div className={styles.formRow}>
+      <Field label="Country" value={form.country} onChange={(event) => update('country', event.target.value)} error={errors.country} required />
+      <Field label="State" value={form.state} onChange={(event) => update('state', event.target.value)} error={errors.state} required />
+    </div>
+    <div className={styles.formRow}>
+      <Field label="LGA" value={form.lga} onChange={(event) => update('lga', event.target.value)} error={errors.lga} required />
+      <Field label="City" value={form.city} onChange={(event) => update('city', event.target.value)} error={errors.city} required />
+    </div>
+    <div className={styles.formRow}>
+      <Field label="ID Type" value={form.idType} onChange={(event) => update('idType', event.target.value)} error={errors.idType} required />
+      <Field label="ID Number" value={form.idNumber} onChange={(event) => update('idNumber', event.target.value)} error={errors.idNumber} required />
+    </div>
+  </div>;
+}
+
+function VehicleDetails({ form, update }) {
+  return <div className={styles.formSection}>
+    <div className={styles.sectionNotice}><Car size={18} /><span>Vehicle data is optional in the documented KYC contract and can be left blank when unavailable.</span></div>
+    <div className={styles.formRow}><Field label="Vehicle Type" value={form.vehicleType} onChange={(event) => update('vehicleType', event.target.value)} /><Field label="Vehicle Brand" value={form.vehicleBrand} onChange={(event) => update('vehicleBrand', event.target.value)} /></div>
+    <div className={styles.formRow}><Field label="Vehicle Model" value={form.vehicleModel} onChange={(event) => update('vehicleModel', event.target.value)} /><Field label="Vehicle Plate Number" value={form.vehiclePlateNumber} onChange={(event) => update('vehiclePlateNumber', event.target.value)} /></div>
+  </div>;
+}
+
+function Documents({ form, errors, updateDocument, fileInputs }) {
+  return <div className={styles.formSection}>
+    <div className={styles.sectionNotice}><Camera size={18} /><span>The portrait is required. Other document uploads map directly to the documented KYC fields and are optional.</span></div>
+    {DOCUMENT_CONFIG.map((document) => {
+      const file = form.documents[document.key];
+      return <div className={styles.docRow} key={document.key}>
+        <div className={styles.docRowHeader}><document.icon size={18} /><div className={styles.docRowInfo}><strong>{document.label}{document.required ? ' *' : ''}</strong>{errors[document.key] && <p className={styles.fieldError}>{errors[document.key]}</p>}</div></div>
+        <div className={styles.docRowActions}>
+          <input ref={(element) => { fileInputs.current[document.key] = element; }} type="file" accept="image/*,.pdf" onChange={(event) => updateDocument(document.key, event.target.files?.[0] || null)} hidden />
+          {file ? <><span className={styles.docFileName}>{file.name}</span><button type="button" className={styles.docRemoveBtn} onClick={() => { updateDocument(document.key, null); if (fileInputs.current[document.key]) fileInputs.current[document.key].value = ''; }} aria-label={`Remove ${document.label}`}><X size={14} /></button></> : <button type="button" className={styles.docUploadBtn} onClick={() => fileInputs.current[document.key]?.click()}><Upload size={14} />Upload</button>}
+        </div>
+      </div>;
+    })}
+  </div>;
+}
+
+function Review({ form, setStep }) {
+  const uploadedCount = Object.values(form.documents).filter(Boolean).length;
+  return <div className={styles.formSection}>
+    <div className={styles.sectionNotice}><ClipboardCheck size={18} /><span>Creating the driver will register the account first, upload selected files, then create the admin-assisted KYC record.</span></div>
+    <div className={styles.reviewBlock}><div className={styles.reviewBlockHeader}><User size={16} /><span>Driver Details</span><button type="button" className={styles.reviewEditBtn} onClick={() => setStep(0)}>Edit</button></div><div className={styles.reviewGrid}><ReviewItem label="Name" value={`${form.firstName} ${form.middleName} ${form.lastName}`.replace(/\s+/g, ' ').trim()} /><ReviewItem label="Phone" value={form.phoneNumber} /><ReviewItem label="Type" value={form.driverType} /><ReviewItem label="Location" value={[form.city, form.state, form.country].filter(Boolean).join(', ')} /></div></div>
+    <div className={styles.reviewBlock}><div className={styles.reviewBlockHeader}><Car size={16} /><span>Vehicle</span><button type="button" className={styles.reviewEditBtn} onClick={() => setStep(1)}>Edit</button></div><div className={styles.reviewGrid}><ReviewItem label="Vehicle" value={[form.vehicleBrand, form.vehicleModel].filter(Boolean).join(' ') || 'Not supplied'} /><ReviewItem label="Plate Number" value={form.vehiclePlateNumber || 'Not supplied'} /></div></div>
+    <div className={styles.reviewBlock}><div className={styles.reviewBlockHeader}><FileText size={16} /><span>Documents</span><button type="button" className={styles.reviewEditBtn} onClick={() => setStep(2)}>Edit</button></div><div className={styles.reviewGrid}><ReviewItem label="Uploaded Files" value={`${uploadedCount} selected`} /><ReviewItem label="Portrait" value={form.documents.pictureUrl ? 'Selected' : 'Required'} /></div></div>
+  </div>;
+}
+
+function Field({ label, error, required, ...props }) { return <div className={styles.formGroup}><Input label={label} required={required} {...props} error={error} />{error && <p className={styles.fieldError}>{error}</p>}</div>; }
+function SelectField({ label, value, onChange, error, required, options }) { return <div className={styles.formGroup}><label className={styles.fieldLabel}>{label}{required ? ' *' : ''}</label><select className={styles.select} value={value} onChange={onChange}><option value="">Select...</option>{options.map((option) => { const [valueOption, labelOption] = Array.isArray(option) ? option : [option.toLowerCase(), option]; return <option key={valueOption} value={valueOption}>{labelOption}</option>; })}</select>{error && <p className={styles.fieldError}>{error}</p>}</div>; }
+function ReviewItem({ label, value }) { return <div className={styles.reviewItem}><label>{label}</label><span>{value || '—'}</span></div>; }

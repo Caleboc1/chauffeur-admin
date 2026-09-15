@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import { formatDateTime } from '@/utils/formatters';
 import DataTable from '@/components/ui/DataTable';
 import StatusBadge from '@/components/ui/StatusBadge';
-import Button from '@/components/ui/Button';
 import { adminApi, mapAdminKyc } from '@/lib/adminApi';
-import { Plus } from 'lucide-react';
 import styles from './InspectionsPage.module.css';
 
 export default function InspectionsPage() {
@@ -83,9 +81,6 @@ export default function InspectionsPage() {
           <h1 className={styles.title}>Physical Inspections</h1>
           <p className={styles.subtitle}>Schedule and record verification results for drivers and vehicles</p>
         </div>
-        <Button variant="primary" icon={Plus}>
-          Schedule New
-        </Button>
       </header>
 
       <div className={styles.tableWrapper}>

@@ -20,24 +20,21 @@ export default function DriversPage() {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    let cancelled = false;
-    async function loadDrivers() {
+  const loadDrivers = async () => {
       setLoading(true);
       setError('');
       try {
         const data = await adminApi.listUsers({ userType: 'driver', limit: 100 });
-        if (!cancelled) setDrivers(data.map(mapAdminUser));
+        setDrivers(data.map(mapAdminUser));
       } catch (err) {
-        if (!cancelled) setError(err.message);
+        setError(err.message);
       } finally {
-        if (!cancelled) setLoading(false);
+        setLoading(false);
       }
-    }
+  };
+
+  useEffect(() => {
     loadDrivers();
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   const columns = [
@@ -184,7 +181,7 @@ export default function DriversPage() {
         </div>
       )}
 
-      <AddDriverModal isOpen={addModalOpen} onClose={() => setAddModalOpen(false)} />
+      <AddDriverModal isOpen={addModalOpen} onClose={() => setAddModalOpen(false)} onCreated={loadDrivers} />
     </div>
   );
 }

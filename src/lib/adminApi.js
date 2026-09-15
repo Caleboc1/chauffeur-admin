@@ -13,6 +13,9 @@ export const adminApi = {
   updateUser: (id, body) => apiRequest(`/api/v1/user_admin/${id}`, { method: 'PATCH', body }).then(unwrapApiData),
   toggleBlockUser: (id, body) => apiRequest(`/api/v1/user_admin/${id}/toggle_block`, { method: 'PATCH', body }).then(unwrapApiData),
   inviteAdmin: (body) => apiRequest('/api/v1/user_admin/invite_admin', { method: 'POST', body }).then(unwrapApiData),
+  requestPhoneVerification: (body) => apiRequest('/api/v1/auth/request_phone_number_verification', { method: 'POST', body }).then(unwrapApiData),
+  confirmPhoneVerification: (body) => apiRequest('/api/v1/auth/confirm_phone_number', { method: 'POST', body }).then(unwrapApiData),
+  registerDriver: (body) => apiRequest('/api/v1/auth/sign_up_driver', { method: 'POST', body }).then(unwrapApiData),
 
   listRides: (params) => apiRequest(`/api/v1/rides_admin${buildQuery(params)}`).then(normalizeListResponse),
   getRide: (id) => apiRequest(`/api/v1/rides_admin/${id}`).then(unwrapApiData),
@@ -61,6 +64,7 @@ export const adminApi = {
   listUserKyc: (params) => apiRequest(`/api/v1/user_kyc_admin${buildQuery(params)}`).then(normalizeListResponse),
   getUserKyc: (id) => apiRequest(`/api/v1/user_kyc_admin/${id}`).then(unwrapApiData),
   processUserKyc: (id, body) => apiRequest(`/api/v1/user_kyc_admin/${id}`, { method: 'PATCH', body }).then(unwrapApiData),
+  createAssistedUserKyc: (body) => apiRequest('/api/v1/user_kyc_admin', { method: 'POST', body }).then(unwrapApiData),
 
   listWallets: (params) => apiRequest(`/api/v1/wallet_admin${buildQuery(params)}`).then(normalizeListResponse),
   getWallet: (id) => apiRequest(`/api/v1/wallet_admin/${id}`).then(unwrapApiData),
