@@ -141,7 +141,11 @@ export default function AddDriverModal({ isOpen, onClose, onCreated }) {
     setVerifyingPhone(true);
     setSubmitError('');
     try {
-      await adminApi.confirmPhoneVerification({ phoneNumber: form.phoneNumber.trim(), token: verificationCode });
+      await adminApi.confirmPhoneVerification({
+        phoneNumber: form.phoneNumber.trim(),
+        token: verificationCode,
+        userType: 'driver',
+      });
       setPhoneVerified(true);
       setErrors((previous) => ({ ...previous, phoneNumber: undefined, verificationCode: undefined }));
     } catch (error) {

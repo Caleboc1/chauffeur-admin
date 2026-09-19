@@ -6,6 +6,7 @@ import styles from './LoginPage.module.css';
 export default function LoginPage() {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+  const [userType, setUserType] = useState('admin');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
@@ -18,7 +19,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await signIn(identifier, password);
+      await signIn(identifier, password, userType);
       window.location.href = from;
     } catch (err) {
       console.error('[Login] Error caught:', err.message);
@@ -61,6 +62,20 @@ export default function LoginPage() {
               required
               placeholder="••••••••"
             />
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label htmlFor="userType">Account Type</label>
+            <select
+              id="userType"
+              value={userType}
+              onChange={(event) => setUserType(event.target.value)}
+              required
+            >
+              <option value="admin">Admin</option>
+              <option value="super">Super Admin</option>
+              <option value="support">Support</option>
+            </select>
           </div>
 
           <button type="submit" className={styles.button} disabled={loading}>

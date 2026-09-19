@@ -35,11 +35,11 @@ export async function getAdminSession() {
   return stored;
 }
 
-export async function signIn(identifier, password) {
+export async function signIn(identifier, password, userType = 'admin') {
   const phoneNumber = identifier.trim();
   const payload = await apiRequest('/api/v1/auth/sign_in', {
     method: 'POST',
-    body: { phoneNumber, password },
+    body: { phoneNumber, password, userType },
   });
   const sessionData = normalizeSession(payload);
 
@@ -51,8 +51,8 @@ export async function signIn(identifier, password) {
   return { data: sessionData, error: null };
 }
 
-export async function mockSignIn(identifier, password) {
-  return signIn(identifier, password);
+export async function mockSignIn(identifier, password, userType = 'admin') {
+  return signIn(identifier, password, userType);
 }
 
 export async function signOut() {

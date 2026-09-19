@@ -59,7 +59,8 @@
   color: var(--color-neutral-200);
 }
 
-.inputGroup input {
+.inputGroup input,
+.inputGroup select {
   padding: var(--spacing-3) var(--spacing-4);
   border: var(--stroke-0) solid var(--color-neutral-700);
   border-radius: var(--stroke-2);
@@ -69,7 +70,8 @@
   transition: border-color 0.2s;
 }
 
-.inputGroup input:focus {
+.inputGroup input:focus,
+.inputGroup select:focus {
   outline: none;
   border-color: var(--brand-gold);
 }
