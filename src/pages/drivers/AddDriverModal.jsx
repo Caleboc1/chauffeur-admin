@@ -161,7 +161,7 @@ export default function AddDriverModal({ isOpen, onClose, onCreated }) {
     setSaving(true);
     setSubmitError('');
     try {
-      await adminApi.registerDriver({
+      const registration = await adminApi.registerDriver({
         phoneNumber: form.phoneNumber.trim(),
         password: form.password,
       });
@@ -197,8 +197,26 @@ export default function AddDriverModal({ isOpen, onClose, onCreated }) {
         ...uploadedDocuments,
       });
 
+      const registrationRecord = registration && typeof registration === 'object' ? registration : {};
+      const registeredUser = registrationRecord.user && typeof registrationRecord.user === 'object'
+        ? registrationRecord.user
+        : registrationRecord;
+      const createdDriver = {
+        ...registeredUser,
+        id: registeredUser.id || registeredUser._id || `pending-${form.phoneNumber.trim()}`,
+        firstName: registeredUser.firstName || form.firstName.trim(),
+        middleName: registeredUser.middleName || form.middleName.trim() || undefined,
+        lastName: registeredUser.lastName || form.lastName.trim(),
+        phoneNumber: registeredUser.phoneNumber || form.phoneNumber.trim(),
+        driverType: registeredUser.driverType || form.driverType,
+        pictureUrl: registeredUser.pictureUrl || uploadedDocuments.pictureUrl,
+        status: registeredUser.status || 'active',
+        userVerificationStatus: registeredUser.userVerificationStatus || 'pending',
+        createdAt: registeredUser.createdAt || new Date().toISOString(),
+      };
+
       setSubmitted(true);
-      await onCreated?.();
+      await onCreated?.(createdDriver);
     } catch (error) {
       setSubmitError(error.message || 'Unable to create the driver.');
     } finally {

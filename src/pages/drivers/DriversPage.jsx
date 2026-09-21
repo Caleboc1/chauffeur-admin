@@ -1,14 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDate, formatId } from '@/utils/formatters';
 import DataTable from '@/components/ui/DataTable';
 import StatusBadge from '@/components/ui/StatusBadge';
 import Button from '@/components/ui/Button';
 import ActionMenu from '@/components/ui/ActionMenu';
-import { UserPlus } from 'lucide-react';
+import { CheckCircle2, UserPlus, X } from 'lucide-react';
 import { adminApi, mapAdminUser } from '@/lib/adminApi';
 import AddDriverModal from './AddDriverModal';
 import styles from './DriversPage.module.css';
+
+function phoneIdentity(value) {
+  return String(value || '').replace(/\D/g, '').slice(-10);
+}
 
 export default function DriversPage() {
   const [drivers, setDrivers] = useState([]);
@@ -18,24 +22,68 @@ export default function DriversPage() {
   const [suspendTarget, setSuspendTarget] = useState(null);
   const [suspendReason, setSuspendReason] = useState('');
   const [addModalOpen, setAddModalOpen] = useState(false);
+  const [toast, setToast] = useState(null);
+  const refreshTimerRef = useRef(null);
   const navigate = useNavigate();
 
-  const loadDrivers = async () => {
-      setLoading(true);
+  const loadDrivers = async ({ silent = false, preserveDriver = null } = {}) => {
+      if (!silent) setLoading(true);
       setError('');
       try {
         const data = await adminApi.listUsers({ userType: 'driver', limit: 100 });
-        setDrivers(data.map(mapAdminUser));
+        const nextDrivers = data.map(mapAdminUser);
+        const containsCreatedDriver = preserveDriver && nextDrivers.some((driver) =>
+          driver.id === preserveDriver.id ||
+          phoneIdentity(driver.phone) === phoneIdentity(preserveDriver.phone)
+        );
+
+        setDrivers(
+          preserveDriver && !containsCreatedDriver
+            ? [preserveDriver, ...nextDrivers]
+            : nextDrivers
+        );
       } catch (err) {
         setError(err.message);
       } finally {
-        setLoading(false);
+        if (!silent) setLoading(false);
       }
   };
 
   useEffect(() => {
     loadDrivers();
+
+    return () => {
+      if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current);
+    };
   }, []);
+
+  useEffect(() => {
+    if (!toast) return undefined;
+    const timer = setTimeout(() => setToast(null), 5000);
+    return () => clearTimeout(timer);
+  }, [toast]);
+
+  function handleDriverCreated(createdDriver) {
+    const mappedDriver = mapAdminUser(createdDriver);
+    const driverName = mappedDriver.full_name === '—' ? 'The driver' : mappedDriver.full_name;
+
+    setDrivers((currentDrivers) => [
+      mappedDriver,
+      ...currentDrivers.filter((driver) =>
+        driver.id !== mappedDriver.id &&
+        phoneIdentity(driver.phone) !== phoneIdentity(mappedDriver.phone)
+      ),
+    ]);
+    setToast({
+      title: 'Driver created successfully',
+      message: `${driverName} has been added to the driver list.`,
+    });
+
+    if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current);
+    refreshTimerRef.current = setTimeout(() => {
+      void loadDrivers({ silent: true, preserveDriver: mappedDriver });
+    }, 1200);
+  }
 
   const columns = [
     {
@@ -86,13 +134,15 @@ export default function DriversPage() {
       key: 'actions',
       label: '',
       width: '3rem',
-      render: (_, row) => (
-        <ActionMenu actions={[
-          { label: 'View Profile', onClick: () => navigate(`/drivers/${row.id}`) },
-          { label: 'Suspend Driver', danger: true, onClick: () => { setSuspendTarget(row); setSuspendModalOpen(true); } },
-          { label: 'View Trips', onClick: () => navigate(`/rides?driverId=${row.id}`) },
-        ]} />
-      )
+      render: (_, row) => String(row.id).startsWith('pending-')
+        ? <span className={styles.noVehicle}>Syncing...</span>
+        : (
+          <ActionMenu actions={[
+            { label: 'View Profile', onClick: () => navigate(`/drivers/${row.id}`) },
+            { label: 'Suspend Driver', danger: true, onClick: () => { setSuspendTarget(row); setSuspendModalOpen(true); } },
+            { label: 'View Trips', onClick: () => navigate(`/rides?driverId=${row.id}`) },
+          ]} />
+        )
     }
   ];
 
@@ -114,6 +164,19 @@ export default function DriversPage() {
           Add Driver
         </Button>
       </header>
+
+      {toast && (
+        <div className={styles.toast} role="status" aria-live="polite">
+          <div className={styles.toastIcon}><CheckCircle2 size={22} /></div>
+          <div className={styles.toastContent}>
+            <strong>{toast.title}</strong>
+            <span>{toast.message}</span>
+          </div>
+          <button type="button" onClick={() => setToast(null)} aria-label="Dismiss notification">
+            <X size={18} />
+          </button>
+        </div>
+      )}
 
       <div className={styles.statsRow}>
         <div className={styles.statCard}>
@@ -181,7 +244,11 @@ export default function DriversPage() {
         </div>
       )}
 
-      <AddDriverModal isOpen={addModalOpen} onClose={() => setAddModalOpen(false)} onCreated={loadDrivers} />
+      <AddDriverModal
+        isOpen={addModalOpen}
+        onClose={() => setAddModalOpen(false)}
+        onCreated={handleDriverCreated}
+      />
     </div>
   );
 }
